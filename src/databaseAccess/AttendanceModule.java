@@ -306,7 +306,7 @@ public class AttendanceModule {
 		return fullFile.toArray(new String[0]);
 
 	}
-	
+
 	public static String[] getAllStatusRecords(String studentID) throws Exception {
 
 		File database = StudentsModule.getStudentFile(studentID);
@@ -367,29 +367,104 @@ public class AttendanceModule {
 										StudentsModule.getStudentDetail(studentID, DatabaseUtilities.LEVEL))
 								.split(", ")[2]);
 		int daysBetweenDates = DatabaseCore.getUnitsBetweenTimes(startDate, endDate, Globals.DAYS);
-		double weeks = daysBetweenDates/7.0;
-		
+		double weeks = daysBetweenDates / 7.0;
+
 		String[] statusChanges = AttendanceModule.getAllStatusRecords(studentID);
-		
+
 		for (int i = 0; i < statusChanges.length; i++) {
-			
+
 			if (statusChanges[i].contains("Injured") || statusChanges[i].contains("Out")) {
-				
+
+				String changeDate = statusChanges[i].split(":\\s")[0].split(" ")[1];
+
 				if (i == statusChanges.length - 1) {
-					
-					
-					
+
+					if (DatabaseCore.isValidDateTime(startDate).isBefore(DatabaseCore.isValidDateTime(changeDate))) {
+
+						int daysSinceOut = DatabaseCore.getUnitsBetweenTimes(changeDate, endDate,
+								Globals.DAYS);
+						double weeksSinceOut = daysSinceOut / 7.0;
+						weeks -= weeksSinceOut;
+
+					} else {
+
+						return 100.0;
+
+					}
+
+				} else {
+
+					String statusReverted = statusChanges[i + 1];
+
+					String RevertDate = statusReverted.split(":\\s")[0].split(" ")[1];
+
+					int daysOut;
+
+					if (DatabaseCore.isValidDateTime(changeDate).isBefore(DatabaseCore.isValidDateTime(startDate))
+							&& DatabaseCore.isValidDateTime(RevertDate).isAfter(DatabaseCore.isValidDateTime(startDate))
+							&& DatabaseCore.isValidDateTime(RevertDate)
+									.isBefore(DatabaseCore.isValidDateTime(endDate))) {
+
+						daysOut = DatabaseCore.getUnitsBetweenTimes(startDate, RevertDate, Globals.DAYS);
+
+					}
+
+					else if (DatabaseCore.isValidDateTime(changeDate).isBefore(DatabaseCore.isValidDateTime(startDate))
+							&& DatabaseCore.isValidDateTime(RevertDate)
+									.isAfter(DatabaseCore.isValidDateTime(endDate))) {
+
+						return 100.0;
+
+					}
+
+					else if (DatabaseCore.isValidDateTime(changeDate).isAfter(DatabaseCore.isValidDateTime(startDate))
+							&& DatabaseCore.isValidDateTime(RevertDate)
+									.isAfter(DatabaseCore.isValidDateTime(endDate))) {
+
+						daysOut = DatabaseCore.getUnitsBetweenTimes(changeDate, endDate, Globals.DAYS);
+
+					}
+
+					else if (DatabaseCore.isValidDateTime(changeDate).isAfter(DatabaseCore.isValidDateTime(startDate))
+							&& DatabaseCore.isValidDateTime(RevertDate)
+									.isBefore(DatabaseCore.isValidDateTime(endDate))) {
+
+						daysOut = DatabaseCore.getUnitsBetweenTimes(changeDate, RevertDate, Globals.DAYS);
+
+					} else {
+
+						daysOut = 0;
+
+					}
+
+					double weeksOut = daysOut / 7.0;
+					weeks -= weeksOut;
+
 				}
+
+			}
+
+		}
+
+		String[] attendanceRecords = AttendanceModule.getAllAttendanceRecords(studentID);
+		
+		int classesTaken = 0;
+
+		for (String record: attendanceRecords) {
+			
+			if (DatabaseCore.isBetweenDates(record.split(":\\s")[0].split(" ")[1], startDate, endDate) && !record.split(":\\s")[2].equals("Open Practice")) {
+				
+				classesTaken++;
 				
 			}
 			
 		}
+		
+		double ReqClasses = weeks * classesPerWeek;
+		
+		if (ReqClasses <= 0) return 100.0;
 
-		String[] attendanceRecords = AttendanceModule.getAllAttendanceRecords(studentID);
-
-		// TODO
-
-		return 0.0;
+		return (classesTaken/ReqClasses) * 100;
 
 	}
 
