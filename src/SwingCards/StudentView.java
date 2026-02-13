@@ -63,8 +63,8 @@ public class StudentView extends Panel {
 				!DatabaseCore.isStudentIn(studentID) ? (e -> DialogGenerator.createCheckInDialog(studentID, this)) : (e -> {
 
 					AttendanceModule.CheckStudentOut(studentID);
-					PromptsService.SuccessPrompt("Successfully checked out");
 					Update(studentID);
+					PromptsService.SuccessPrompt("Successfully checked out");
 
 				}), BUTTONPANELBUTTONDIM, BUTTONPANELCENTERX, BUTTONFORM1STARTY, GreenColor, BUTTONPANELARCRAD,
 				BUTTONPANELFONTSIZE);
