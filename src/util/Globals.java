@@ -13,6 +13,10 @@ public final class Globals {
 	public static final String CASTING = "CASTING";
 	public static final String FINANCIAL = "FINANCIAL";
 	public static final String ADMINNOTE = "ADMINNOTE";
+	
+	public static final String MINUTES = "minutes";
+	public static final String HOURS = "hours";
+	public static final String DAYS = "days";
 
 	public static final String ChangeMedicalConditionsFormat = PROFILEDATA + " %s: Medical Conditions Changed to %s";
 	public static final String ChangeFirstNameFormat = PROFILEDATA + " %s: First Name Modified to %s";
@@ -29,8 +33,8 @@ public final class Globals {
 	public static final String ChangeAccountBalanceFormat = FINANCIAL + " %s: Account Balance Changed to %s";
 	public static final String ChangeLevelFormat = LEVELCHANGE + " %s: Moved to %s";
 	public static final String CastingFormat = CASTING + " %s: Casted as %s in casts %s";
-	public static final String AttendanceEnteredFormat = ATTENDANCE + " %s: %s";
-	public static final String AttendanceExitFormat = ATTENDANCE + " %s: %s %s";
+	public static final String AttendanceEnteredFormat = ATTENDANCE + " %s: %s: %s"; 
+	public static final String AttendanceExitFormat = ATTENDANCE + " %s: %s %s: %s";
 	public static final String TeachersNoteFormat = ADMINNOTE + " %s: %s - %s";
 	public static final String ACTIVE = "ACTIVE";
 	public static final String INACTIVE = "INACTIVE";

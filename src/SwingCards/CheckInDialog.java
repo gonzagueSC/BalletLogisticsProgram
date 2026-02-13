@@ -40,7 +40,7 @@ public class CheckInDialog extends JDialog {
 	private int BUTTONARCRAD = 70;
 	private int BUTTONFONTSIZE = 20;
 
-	public CheckInDialog(JFrame parent, String ID) {
+	public CheckInDialog(JFrame parent, String ID, StudentView panel) {
 
 		super(parent, "", true);
 
@@ -125,6 +125,8 @@ public class CheckInDialog extends JDialog {
 					AttendanceModule.CheckStudentIn(ID, className);
 					this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					this.dispose();
+					panel.Update(ID);
+					PromptsService.SuccessPrompt("Successfully checked in!");
 
 				} catch (Exception e1) {
 

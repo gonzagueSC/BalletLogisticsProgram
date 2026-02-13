@@ -4,6 +4,7 @@ import java.io.*;
 import java.sql.Date;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import util.Globals;
@@ -25,7 +26,7 @@ public class AttendanceModule {
 		BufferedWriter LogCheckIn = new BufferedWriter(new FileWriter(StudentLog, true));
 
 		LogCheckIn.write(String.format(Globals.AttendanceEnteredFormat, LocalDate.now().toString(),
-				LocalTime.now().format(timeFormat)) + "\n");
+				LocalTime.now().format(timeFormat), className) + "\n");
 
 		LogCheckIn.close();
 
@@ -117,7 +118,8 @@ public class AttendanceModule {
 				if (NextLine.split(":\\s").length > 1 && NextLine.split(":\\s")[1].split(" ").length < 2
 						&& NextLine.split(" ")[0].equals(Globals.ATTENDANCE)) {
 
-					writer.write(NextLine + " " + LocalTime.now().format(timeFormat) + "\n");
+					writer.write(String.format(Globals.AttendanceExitFormat, NextLine.split(":\\s")[0].split(" ")[1],
+							NextLine.split(":\\s")[1].split(" ")[0], LocalTime.now().format(timeFormat), NextLine.split(":\\s")[2]) + "\n");
 
 				} else {
 
@@ -277,6 +279,66 @@ public class AttendanceModule {
 			e.printStackTrace();
 
 		}
+		
+	}
+	
+	public static String[] getAllAttendanceRecords(String studentID) throws Exception {
+		
+		File database = StudentsModule.getStudentFile(studentID);
+		String[] allFile = DatabaseCore.returnAllFile(database);
+		
+		ArrayList<String> fullFile = new ArrayList<String>();
+		
+		for (String record: allFile) {
+			
+			if (record.matches(Globals.ATTENDANCE + ".*")) {
+				
+				fullFile.add(record);
+				
+			}
+			
+		}
+		
+		return fullFile.toArray(new String[0]);
+		
+	}
+	
+	public static int getHoursOverRange(String startDate, String endDate, String studentID) throws Exception {
+		
+		int minutes = 0;
+		
+		String[] attendanceRecords = AttendanceModule.getAllAttendanceRecords(studentID);
+		
+		ArrayList<String> attendanceWithinRange = new ArrayList<String>();
+		
+		for (String record: attendanceRecords) {
+			
+			if (DatabaseCore.isBetweenDates(record.split(":\\s")[0].split(" ")[1], startDate, endDate)) {
+				
+				attendanceWithinRange.add(record);
+				String startTime = record.split(":\\s")[1].split(" ")[0];
+				String endTime = record.split(":\\s")[1].split(" ")[1];
+				
+				int sessionMinutes = DatabaseCore.getUnitsBetweenTimes(startTime, endTime, Globals.MINUTES);
+				minutes += sessionMinutes;
+				
+			}
+			
+		}
+		
+		float preciseHours = minutes/60.0f;
+		
+		return Math.round(preciseHours);
+		
+	}
+	
+	public static double getComplianceScoreOverRange(String startDate, String endDate) {
+		
+		
+		
+		//TODO
+		
+		return 0.0;
 		
 	}
 

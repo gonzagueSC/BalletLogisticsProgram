@@ -3,6 +3,7 @@ package databaseAccess;
 import java.io.*;
 import java.time.*;
 import java.time.format.*;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -879,6 +880,29 @@ public class DatabaseCore {
 
 		return "404";
 
+	}
+	
+	public static int getUnitsBetweenTimes(String startTime, String endTime, String units) throws Exception {
+		
+		if (!units.equals(Globals.MINUTES) && !units.equals(Globals.HOURS) && !units.equals(Globals.DAYS)) {
+			
+			return -1;
+			
+		}
+		
+		LocalDateTime start = DatabaseCore.isValidDateTime(startTime);
+		LocalDateTime end = DatabaseCore.isValidDateTime(endTime);
+		
+		long time = switch(units) {
+		case Globals.MINUTES -> ChronoUnit.MINUTES.between(start, end);
+		case Globals.HOURS -> ChronoUnit.HOURS.between(start, end);
+		case Globals.DAYS -> ChronoUnit.DAYS.between(start, end);
+		default ->
+			throw new IllegalArgumentException("Unexpected value: " + units);
+		};
+		
+		return Math.round(time);
+		
 	}
 
 }

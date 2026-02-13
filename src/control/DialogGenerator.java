@@ -97,7 +97,7 @@ public class DialogGenerator {
 	
 	public static void createCheckInDialog(String studentID, StudentView panel) {
 		
-		new CheckInDialog(Main.frame, studentID);
+		new CheckInDialog(Main.frame, studentID, panel);
 		
 	}
 	

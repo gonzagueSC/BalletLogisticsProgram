@@ -86,31 +86,10 @@ public class StudentsModule {
 
 	public static String[] getStudentInfo(String name, String birthDate) {
 
-		String[] studentDetails = new String[DatabaseUtilities.StudentInfo.length];
-
-		// GET THE UNIQUE STUDENT ID FILENAME
-
-		String fileName = StudentsModule.getStudentID(name, birthDate);
-
-		// CREATE A FILE OBJECT FOR THE STUDENT'S INFO FILE
-
-		File readFile = new File(DatabaseFolders.StudentsFolder, fileName);
-
-		// READ LINES 0 TO 22 (TOTAL 23 LINES) FROM THE STUDENT'S FILE
-
-		try {
-
-			studentDetails = DatabaseCore.returnFileExcerpt(readFile, 0, studentDetails.length);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-		}
 
 		// RETURN THE ARRAY OF STUDENT DETAILS
 
-		return studentDetails;
+		return getStudentInfo(StudentsModule.getStudentID(name, birthDate));
 
 	}
 	
@@ -1466,6 +1445,12 @@ public static String getStudentDetail(String ID, String detail) {
 		String studentLevel = StudentsModule.getStudentDetail(ID, DatabaseUtilities.LEVEL);
 		
 		return SchedulesModule.getAllUpcomingClassesBelowLevelToday(studentLevel);
+		
+	}
+	
+	public static File getStudentFile(String ID) {
+		
+		return new File(DatabaseFolders.StudentsFolder, ID);
 		
 	}
 
