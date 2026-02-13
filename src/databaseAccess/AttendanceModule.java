@@ -7,10 +7,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import databaseConstants.DatabaseUtilities;
 import util.Globals;
 
 public class AttendanceModule {
-	
+
 	public static void CheckStudentIn(String studentID, String className) throws Exception {
 
 		File AttendanceFile = Globals.AttendanceToday;
@@ -119,7 +120,8 @@ public class AttendanceModule {
 						&& NextLine.split(" ")[0].equals(Globals.ATTENDANCE)) {
 
 					writer.write(String.format(Globals.AttendanceExitFormat, NextLine.split(":\\s")[0].split(" ")[1],
-							NextLine.split(":\\s")[1].split(" ")[0], LocalTime.now().format(timeFormat), NextLine.split(":\\s")[2]) + "\n");
+							NextLine.split(":\\s")[1].split(" ")[0], LocalTime.now().format(timeFormat),
+							NextLine.split(":\\s")[2]) + "\n");
 
 				} else {
 
@@ -177,7 +179,8 @@ public class AttendanceModule {
 
 				nextLine = RoleReader.nextLine();
 
-				if (!nextLine.split(", ")[0].strip().equals(studentID) || nextLine.split(", ").length == 4 || date.getName().equals("Attendance:" + Date.valueOf(LocalDate.now()))) {
+				if (!nextLine.split(", ")[0].strip().equals(studentID) || nextLine.split(", ").length == 4
+						|| date.getName().equals("Attendance:" + Date.valueOf(LocalDate.now()))) {
 
 					studentsFixer.write(nextLine + "\n");
 
@@ -224,7 +227,8 @@ public class AttendanceModule {
 
 				NextLine = AttendanceReader.nextLine();
 
-				if (NextLine.split(":\\s").length > 1 && NextLine.split(":\\s")[1].split(" ").length < 2 && NextLine.split(" ")[0].equals(Globals.ATTENDANCE)
+				if (NextLine.split(":\\s").length > 1 && NextLine.split(":\\s")[1].split(" ").length < 2
+						&& NextLine.split(" ")[0].equals(Globals.ATTENDANCE)
 						&& !DatabaseCore.isValidDate(NextLine.split(":\\s")[0].split(" ")[1]).toString()
 								.equals(LocalDate.now().toString())) {
 
@@ -252,12 +256,11 @@ public class AttendanceModule {
 		}
 
 	}
-	
 
 	public static void checkForNotCheckedOut(File attendanceToday) {
-		
-		//Global time variable
-		
+
+		// Global time variable
+
 		int timeAfterEntryIfNotCheckedOut = 90;
 
 		try {
@@ -267,9 +270,10 @@ public class AttendanceModule {
 			for (String attendanceLog : allAttendanceToday) {
 
 				if (attendanceLog.split(", ").length == 3) {
-					
-					AttendanceModule.CheckStudentOut(attendanceLog.split(", ")[0], attendanceToday, timeAfterEntryIfNotCheckedOut);
-					
+
+					AttendanceModule.CheckStudentOut(attendanceLog.split(", ")[0], attendanceToday,
+							timeAfterEntryIfNotCheckedOut);
+
 				}
 
 			}
@@ -279,67 +283,114 @@ public class AttendanceModule {
 			e.printStackTrace();
 
 		}
-		
+
 	}
-	
+
 	public static String[] getAllAttendanceRecords(String studentID) throws Exception {
-		
+
 		File database = StudentsModule.getStudentFile(studentID);
 		String[] allFile = DatabaseCore.returnAllFile(database);
-		
+
 		ArrayList<String> fullFile = new ArrayList<String>();
-		
-		for (String record: allFile) {
-			
+
+		for (String record : allFile) {
+
 			if (record.matches(Globals.ATTENDANCE + ".*")) {
-				
+
 				fullFile.add(record);
-				
+
 			}
-			
+
 		}
-		
+
 		return fullFile.toArray(new String[0]);
-		
+
 	}
 	
+	public static String[] getAllStatusRecords(String studentID) throws Exception {
+
+		File database = StudentsModule.getStudentFile(studentID);
+		String[] allFile = DatabaseCore.returnAllFile(database);
+
+		ArrayList<String> fullFile = new ArrayList<String>();
+
+		for (String record : allFile) {
+
+			if (record.matches(Globals.PROFILEDATA + ".*") && record.contains("Status Changed to")) {
+
+				fullFile.add(record);
+
+			}
+
+		}
+
+		return fullFile.toArray(new String[0]);
+
+	}
+
 	public static int getHoursOverRange(String startDate, String endDate, String studentID) throws Exception {
-		
+
 		int minutes = 0;
-		
+
 		String[] attendanceRecords = AttendanceModule.getAllAttendanceRecords(studentID);
-		
+
 		ArrayList<String> attendanceWithinRange = new ArrayList<String>();
-		
-		for (String record: attendanceRecords) {
-			
+
+		for (String record : attendanceRecords) {
+
 			if (DatabaseCore.isBetweenDates(record.split(":\\s")[0].split(" ")[1], startDate, endDate)) {
-				
+
 				attendanceWithinRange.add(record);
 				String startTime = record.split(":\\s")[1].split(" ")[0];
 				String endTime = record.split(":\\s")[1].split(" ")[1];
-				
+
 				int sessionMinutes = DatabaseCore.getUnitsBetweenTimes(startTime, endTime, Globals.MINUTES);
 				minutes += sessionMinutes;
+
+			}
+
+		}
+
+		float preciseHours = minutes / 60.0f;
+
+		return Math.round(preciseHours);
+
+	}
+
+	public static double getComplianceScoreOverRange(String startDate, String endDate, String studentID)
+			throws Exception {
+
+		int classesPerWeek = Integer
+				.parseInt(
+						SystemSettingsModule
+								.getSystemDetail(SystemSettingsModule.LEVELS,
+										StudentsModule.getStudentDetail(studentID, DatabaseUtilities.LEVEL))
+								.split(", ")[2]);
+		int daysBetweenDates = DatabaseCore.getUnitsBetweenTimes(startDate, endDate, Globals.DAYS);
+		double weeks = daysBetweenDates/7.0;
+		
+		String[] statusChanges = AttendanceModule.getAllStatusRecords(studentID);
+		
+		for (int i = 0; i < statusChanges.length; i++) {
+			
+			if (statusChanges[i].contains("Injured") || statusChanges[i].contains("Out")) {
+				
+				if (i == statusChanges.length - 1) {
+					
+					
+					
+				}
 				
 			}
 			
 		}
-		
-		float preciseHours = minutes/60.0f;
-		
-		return Math.round(preciseHours);
-		
-	}
-	
-	public static double getComplianceScoreOverRange(String startDate, String endDate) {
-		
-		
-		
-		//TODO
-		
+
+		String[] attendanceRecords = AttendanceModule.getAllAttendanceRecords(studentID);
+
+		// TODO
+
 		return 0.0;
-		
+
 	}
 
 }

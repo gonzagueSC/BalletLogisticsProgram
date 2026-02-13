@@ -73,6 +73,14 @@ public class DatabaseCore {
 		return fullFile.toArray(new String[0]);
 
 	}
+	
+	public static String getLine(File readFile, int index) throws Exception {
+		
+		String[] file = DatabaseCore.returnFileExcerpt(readFile, 0, index);
+		
+		return file[index];
+		
+	}
 
 	public static String[] returnFileExcerpt(File readFile, int startLine, int endLine)
 			throws IOException, IndexOutOfBoundsException {

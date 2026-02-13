@@ -281,5 +281,33 @@ public class SystemSettingsModule {
 		return false;
 		
 	}
+	
+	public static String getSystemDetail(String type, String detailData) {
+		
+		File SettingsFile = switch (type) {
+
+		case TEACHERS -> Databases.Teachers;
+		case STUDIOS -> Databases.Studios;
+		case LEVELS -> Databases.Levels;
+		case ADMINS -> Databases.AdminUsersAndPassword;
+		default -> throw new IllegalArgumentException("Unexpected value: " + type);
+
+		};
+		
+		try {
+
+			int ind = DatabaseCore.getLineIndex(SettingsFile, ", ", detailData);
+			String LevelData = DatabaseCore.getLine(SettingsFile, ind);
+			return LevelData;
+
+		} catch (Exception e) {
+
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+		}
+		return "";
+		
+	}
 
 }
