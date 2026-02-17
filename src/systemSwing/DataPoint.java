@@ -18,7 +18,7 @@ public class DataPoint extends JButton {
 	private String desc;
 	private int value;
 
-	public DataPoint(String descriptor, int pointVal) {
+	public DataPoint(String descriptor, int pointVal, String regex) {
 
 		desc = descriptor;
 		value = pointVal;
@@ -33,7 +33,7 @@ public class DataPoint extends JButton {
 		setMaximumSize(size);
 		
 		JPopupMenu popup = new JPopupMenu();
-		popup.add(new JLabel("  You hovered over the dot!  "));
+		popup.add(new JLabel(String.format(regex, pointVal)));
 		popup.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		DataPoint Point = this;
 		
