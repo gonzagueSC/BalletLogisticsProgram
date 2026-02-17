@@ -8,7 +8,7 @@ import control.Main;
 import control.PromptsService;
 import swingConstants.ViewConstants;
 import systemSwing.Button;
-import systemSwing.LargeInput;
+import systemSwing.Input;
 import systemSwing.TitleLabel;
 import static util.SwingConstants.*;
 
@@ -18,7 +18,7 @@ public class MedicalConditionsView extends JPanel {
 
 	private TitleLabel title;
 	private TitleLabel medicalConditionsLab;
-	private LargeInput medicalConditions;
+	private Input medicalConditions;
 	private Button Save;
 
 	public MedicalConditionsView() {
@@ -27,7 +27,7 @@ public class MedicalConditionsView extends JPanel {
 		title = new TitleLabel("Enrollment Details", TITLELABELX, TITLELABELY, TITLELABELWIDTH, TITLELABELHEIGHT,
 				TITLELABELFONTSIZE, TextColor);
 
-		medicalConditions = new LargeInput(175, 175, 850, 300, INPUTFORM1INPUTFONTSIZE, TextColor,
+		medicalConditions = new Input(175, 175, 850, 300, INPUTFORM1INPUTFONTSIZE, TextColor,
 				INPUTFORM1ARCRAD);
 		Save = new Button("Save", null, ConfirmButtonD, ConfirmButtonX, ConfirmButtonY, ConfirmButtonColor,
 				ConfirmButtonArcRad, ConfirmButtonFontSize);

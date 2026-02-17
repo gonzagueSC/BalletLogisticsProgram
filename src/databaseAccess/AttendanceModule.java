@@ -513,9 +513,11 @@ public class AttendanceModule {
 		while (!current.isAfter(lastDayOfMonth)) {
 
 			weeks++;
-			current.plusWeeks(1);
+			current = current.plusWeeks(1);
 
 		}
+		
+		System.err.println("Found number of weeks");
 
 		DataPoint[] monthData = new DataPoint[weeks];
 
@@ -534,6 +536,8 @@ public class AttendanceModule {
 			current.plusWeeks(1);
 
 		}
+		
+		System.err.println("All done");
 
 		return monthData;
 
@@ -552,13 +556,14 @@ public class AttendanceModule {
 
 		for (int i = 0; i < WeekData.length; i++) {
 
-			LocalDate startOfMonth = current.with(TemporalAdjusters.firstDayOfMonth());
-			LocalDate endOfMonth = current.with(TemporalAdjusters.lastDayOfMonth());
+			LocalDate startOfWeek = current.with(TemporalAdjusters.firstDayOfMonth());
+			LocalDate endOfWeek = current.with(TemporalAdjusters.lastDayOfMonth());
 
-			int hours = AttendanceModule.getHoursOverRange(startOfMonth.toString(), endOfMonth.toString(), ID);
+			int hours = AttendanceModule.getHoursOverRange(startOfWeek.toString(), endOfWeek.toString(), ID);
 
-			DataPoint weekData = new DataPoint(Globals.DaysOfTheWeek[i], hours, "%d Hours");
-			WeekData[i] = weekData;
+			DataPoint dayData = new DataPoint(Globals.DaysOfTheWeek[i], hours, "%d Hours");
+			dayData.setFinal(true);
+			WeekData[i] = dayData;
 			
 			current.plusDays(1);
 

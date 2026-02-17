@@ -41,8 +41,8 @@ public class IndividualStudentView extends JPanel {
 		AttendanceLog = new Button("Attendance", null, BUTTONPANELBUTTONDIM, BUTTONPANELRIGHTX,
 				BUTTONFORM2STARTY + BUTTONFORM2GAP * 2, SecondaryPurple, BUTTONPANELARCRAD, BUTTONPANELFONTSIZE);
 
-		MainMenu = new Button("Back", null, ChangeButtonD, LeftChangeButtonX, ChangeButtonY, TextColor, ChangeButtonArcRad,
-				ChangeButtonFontSize);
+		MainMenu = new Button("Back", null, ChangeButtonD, LeftChangeButtonX, ChangeButtonY, TextColor,
+				ChangeButtonArcRad, ChangeButtonFontSize);
 
 		this.setLayout(null);
 		this.add(title);
@@ -61,7 +61,7 @@ public class IndividualStudentView extends JPanel {
 	}
 
 	public void Update(String name) {
-		
+
 		this.remove(Profile);
 		this.remove(Enrollment);
 		this.remove(Medical);
@@ -69,7 +69,7 @@ public class IndividualStudentView extends JPanel {
 		this.remove(Teacher);
 		this.remove(AttendanceLog);
 		this.remove(MainMenu);
-		
+
 		Profile = new Button("Student Profile", null, BUTTONPANELBUTTONDIM, BUTTONPANELLEFTX, BUTTONFORM2STARTY,
 				TerciaryColor, BUTTONPANELARCRAD, BUTTONPANELFONTSIZE);
 		Enrollment = new Button("Enrollment Details", null, BUTTONPANELBUTTONDIM, BUTTONPANELRIGHTX, BUTTONFORM2STARTY,
@@ -83,8 +83,8 @@ public class IndividualStudentView extends JPanel {
 		AttendanceLog = new Button("Attendance", null, BUTTONPANELBUTTONDIM, BUTTONPANELRIGHTX,
 				BUTTONFORM2STARTY + BUTTONFORM2GAP * 2, SecondaryPurple, BUTTONPANELARCRAD, BUTTONPANELFONTSIZE);
 
-		MainMenu = new Button("Back", null, ChangeButtonD, LeftChangeButtonX, ChangeButtonY, TextColor, ChangeButtonArcRad,
-				ChangeButtonFontSize);
+		MainMenu = new Button("Back", null, ChangeButtonD, LeftChangeButtonX, ChangeButtonY, TextColor,
+				ChangeButtonArcRad, ChangeButtonFontSize);
 
 		Student.setText(name.split(" ")[0] + " " + name.split(" ")[1]);
 		Profile.addActionListener(e -> Main.Router.showDynamicView(ViewConstants.STUDENT_PROFILE_VIEW, name));
@@ -92,16 +92,17 @@ public class IndividualStudentView extends JPanel {
 		Medical.addActionListener(e -> Main.Router.showDynamicView(ViewConstants.MEDICAL_CONDITIONS_VIEW, name));
 		Costumes.addActionListener(e -> Main.Router.showDynamicView(ViewConstants.COSTUME_MEASUREMENTS_VIEW, name));
 		Teacher.addActionListener(e -> Main.Router.showDynamicView(ViewConstants.TEACHER_VIEW, name));
-		AttendanceLog.addActionListener(e -> Main.Router.showDynamicView(ViewConstants.ADMIN_ATTENDANCE_VIEW, name));
+		AttendanceLog.addActionListener(e -> Main.Router.showDynamicView(ViewConstants.ADMIN_ATTENDANCE_VIEW,
+				name.split(" ")[name.split(" ").length - 1]));
 		MainMenu.addActionListener(e -> {
-			
+
 			Main.Router.showView(ViewConstants.STUDENT_DIRECTORY_VIEW);
-			
+
 		});
 
 		this.revalidate();
 		this.repaint();
-		
+
 		this.add(Profile);
 		this.add(Enrollment);
 		this.add(Medical);

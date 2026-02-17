@@ -65,6 +65,8 @@ public class ViewFactory {
 		case ViewConstants.TEACHER_MANAGER_VIEW -> teacherManagerView;
 		case ViewConstants.SCHEDULES_VIEW -> schedulesMainView;
 		case ViewConstants.STUDENT_VIEW -> studentView;
+		case ViewConstants.TEACHER_VIEW -> teacherPanelView;
+		case ViewConstants.ADMIN_ATTENDANCE_VIEW -> adminAttendanceView;
 		default -> throw new IllegalArgumentException("Unexpected value: " + name);
 
 		};
@@ -371,6 +373,9 @@ public class ViewFactory {
 			case ViewConstants.STUDENT_VIEW:
 				studentView.Update(param1);
 				break;
+			case ViewConstants.ADMIN_ATTENDANCE_VIEW:
+				adminAttendanceView.Update(param1);
+				break;
 
 			}
 			
@@ -455,6 +460,9 @@ public class ViewFactory {
 			}
 
 			switch (name) {
+			
+			case ViewConstants.ADMIN_ATTENDANCE_VIEW:
+				adminAttendanceView.Update(param1, java.time.temporal.ChronoUnit.valueOf(param2), param3);
 
 			}
 			

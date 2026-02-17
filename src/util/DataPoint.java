@@ -69,6 +69,12 @@ public class DataPoint extends JButton {
 		this.setBounds(X, Y, this.getSize().width, this.getSize().height);
 
 	}
+	
+	public void setFinal(boolean deactivated) {
+		
+		this.setEnabled(!deactivated);
+		
+	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
