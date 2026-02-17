@@ -470,6 +470,33 @@ public class AttendanceModule {
 		return (classesTaken / ReqClasses) * 100;
 
 	}
+	
+	public static DataPoint[] getYearData(String date, String ID) throws Exception {
+
+		LocalDate monthDate = DatabaseCore.isValidDate(date);
+
+		LocalDate firstDayOfYear = monthDate.with(TemporalAdjusters.firstDayOfYear());
+		LocalDate lastDayOfYear = monthDate.with(TemporalAdjusters.lastDayOfYear());
+
+		LocalDate current = firstDayOfYear;
+
+		DataPoint[] yearData = new DataPoint[12];
+
+		for (int i = 0; i < yearData.length; i++) {
+
+			LocalDate startOfMonth = current.with(TemporalAdjusters.firstDayOfMonth());
+			LocalDate endOfMonth = current.with(TemporalAdjusters.lastDayOfMonth());
+			
+			int hours = AttendanceModule.getHoursOverRange(startOfMonth.toString(), endOfMonth.toString(), ID);
+			
+			DataPoint weekData = new DataPoint(Globals.Months[i], hours, "%d Hours");
+			yearData[i] = weekData;
+
+		}
+
+		return yearData;
+
+	}
 
 	public static DataPoint[] getMonthData(String date, String ID) throws Exception {
 

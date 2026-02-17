@@ -27,7 +27,7 @@ public class DataPoint extends JButton {
 		setBorderPainted(false);
 		setFocusPainted(false);
 
-		Dimension size = new Dimension(15, 15);
+		Dimension size = new Dimension(7, 7);
 		setPreferredSize(size);
 		setMinimumSize(size);
 		setMaximumSize(size);
@@ -61,6 +61,12 @@ public class DataPoint extends JButton {
 	public String getDescriptor() {
 
 		return desc;
+
+	}
+
+	public void setPosition(int X, int Y) {
+
+		this.setBounds(X, Y, this.getSize().width, this.getSize().height);
 
 	}
 

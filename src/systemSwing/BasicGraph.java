@@ -114,10 +114,11 @@ public class BasicGraph extends Panel {
 			double dataValProp = (double) (dataPoints[i].getValue()) / UpperBound;
 			int dataValHeight = (int) (dataValProp * (bottomMarginY - topMarginY));
 
-			int dataValX = (startX + intervalX * i) - pointRadius;
-			int dataValY = bottomMarginY - dataValHeight - pointRadius;
+			int dataValX = (startX + intervalX * i);
+			int dataValY = bottomMarginY - dataValHeight;
 
-			g.drawOval(dataValX, dataValY, pointRadius * 2, pointRadius * 2);
+			dataPoints[i].setPosition(dataValX, dataValY);
+			this.add(dataPoints[i]);
 
 		}
 		
