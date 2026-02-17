@@ -491,6 +491,8 @@ public class AttendanceModule {
 			
 			DataPoint weekData = new DataPoint(Globals.Months[i], hours, "%d Hours");
 			yearData[i] = weekData;
+			
+			current.plusMonths(1);
 
 		}
 
@@ -528,10 +530,41 @@ public class AttendanceModule {
 			
 			DataPoint weekData = new DataPoint("Week " + (i+1), hours, "%d Hours");
 			monthData[i] = weekData;
+			
+			current.plusWeeks(1);
 
 		}
 
 		return monthData;
+
+	}
+	
+	public static DataPoint[] getWeekData(String date, String ID) throws Exception {
+
+		LocalDate monthDate = DatabaseCore.isValidDate(date);
+
+		LocalDate firstDayOfWeek = monthDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+		LocalDate lastDayOfWeek = monthDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+
+		LocalDate current = firstDayOfWeek;
+
+		DataPoint[] WeekData = new DataPoint[7];
+
+		for (int i = 0; i < WeekData.length; i++) {
+
+			LocalDate startOfMonth = current.with(TemporalAdjusters.firstDayOfMonth());
+			LocalDate endOfMonth = current.with(TemporalAdjusters.lastDayOfMonth());
+
+			int hours = AttendanceModule.getHoursOverRange(startOfMonth.toString(), endOfMonth.toString(), ID);
+
+			DataPoint weekData = new DataPoint(Globals.DaysOfTheWeek[i], hours, "%d Hours");
+			WeekData[i] = weekData;
+			
+			current.plusDays(1);
+
+		}
+
+		return WeekData;
 
 	}
 

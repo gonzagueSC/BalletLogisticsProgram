@@ -41,6 +41,7 @@ public final class Globals {
 	public static final String MEDICAL_LEAVE = "MEDICAL LEAVE";
 	public static final String[] Months = { "January", "February", "March", "April", "May", "June", "July", "August",
 			"September", "October", "November", "December" };
+	public static final String[] DaysOfTheWeek = { "Monday", "February", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 	public static final String[] StudentInfo = { "First Name", "Last Name", "Level", "Email", "Phone Number",
 			"Medical Conditions", "Date Of Birth", "Gender", "Date Joined", "Address", "Activity Status",
 			"Tuition Plan", "Account Balance", "Height", "Girth", "Waist", "Hips", "Bust/Chest", "Inseam",
