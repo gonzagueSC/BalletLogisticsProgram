@@ -91,8 +91,8 @@ public class IndividualStudentView extends JPanel {
 		Enrollment.addActionListener(e -> Main.Router.showDynamicView(ViewConstants.ENROLLMENT_DETAILS_VIEW, name));
 		Medical.addActionListener(e -> Main.Router.showDynamicView(ViewConstants.MEDICAL_CONDITIONS_VIEW, name));
 		Costumes.addActionListener(e -> Main.Router.showDynamicView(ViewConstants.COSTUME_MEASUREMENTS_VIEW, name));
-		//Teacher.addActionListener(e -> Main.Router.showDynamicView(ViewConstants.TEACHER_PANEL, name));
-		//AttendanceLog.addActionListener(e -> Main.Router.showDynamicView(ViewConstants.ATTENDANCE_LOG, name));
+		Teacher.addActionListener(e -> Main.Router.showDynamicView(ViewConstants.TEACHER_VIEW, name));
+		AttendanceLog.addActionListener(e -> Main.Router.showDynamicView(ViewConstants.ADMIN_ATTENDANCE_VIEW, name));
 		MainMenu.addActionListener(e -> {
 			
 			Main.Router.showView(ViewConstants.STUDENT_DIRECTORY_VIEW);

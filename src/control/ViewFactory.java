@@ -32,6 +32,7 @@ public class ViewFactory {
 	static SchedulesMainView schedulesMainView;
 	static StudentView studentView;
 	static TeacherPanelView teacherPanelView;
+	static AdminAttendanceDataView adminAttendanceView;
 
 	public void setUp() {
 
@@ -162,6 +163,10 @@ public class ViewFactory {
 
 		case ViewConstants.TEACHER_VIEW:
 			teacherPanelView = new TeacherPanelView();
+			break;
+			
+		case ViewConstants.ADMIN_ATTENDANCE_VIEW:
+			adminAttendanceView = new AdminAttendanceDataView();
 			break;
 
 		}

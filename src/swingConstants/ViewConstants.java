@@ -28,5 +28,6 @@ public class ViewConstants {
 	public final static String SCHEDULES_VIEW = "SCHEDULES_VIEW";
 	public final static String STUDENT_VIEW = "STUDENT_VIEW";
 	public final static String TEACHER_VIEW = "TEACHER_PANEL_VIEW";
+	public final static String ADMIN_ATTENDANCE_VIEW = "ADMIN_ATTENDANCE_VIEW";
 
 }
