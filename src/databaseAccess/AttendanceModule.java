@@ -4,10 +4,12 @@ import java.io.*;
 import java.sql.Date;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import databaseConstants.DatabaseUtilities;
+import util.DataPoint;
 import util.Globals;
 
 public class AttendanceModule {
@@ -381,8 +383,7 @@ public class AttendanceModule {
 
 					if (DatabaseCore.isValidDateTime(startDate).isBefore(DatabaseCore.isValidDateTime(changeDate))) {
 
-						int daysSinceOut = DatabaseCore.getUnitsBetweenTimes(changeDate, endDate,
-								Globals.DAYS);
+						int daysSinceOut = DatabaseCore.getUnitsBetweenTimes(changeDate, endDate, Globals.DAYS);
 						double weeksSinceOut = daysSinceOut / 7.0;
 						weeks -= weeksSinceOut;
 
@@ -447,24 +448,63 @@ public class AttendanceModule {
 		}
 
 		String[] attendanceRecords = AttendanceModule.getAllAttendanceRecords(studentID);
-		
+
 		int classesTaken = 0;
 
-		for (String record: attendanceRecords) {
-			
-			if (DatabaseCore.isBetweenDates(record.split(":\\s")[0].split(" ")[1], startDate, endDate) && !record.split(":\\s")[2].equals("Open Practice")) {
-				
-				classesTaken++;
-				
-			}
-			
-		}
-		
-		double ReqClasses = weeks * classesPerWeek;
-		
-		if (ReqClasses <= 0) return 100.0;
+		for (String record : attendanceRecords) {
 
-		return (classesTaken/ReqClasses) * 100;
+			if (DatabaseCore.isBetweenDates(record.split(":\\s")[0].split(" ")[1], startDate, endDate)
+					&& !record.split(":\\s")[2].equals("Open Practice")) {
+
+				classesTaken++;
+
+			}
+
+		}
+
+		double ReqClasses = weeks * classesPerWeek;
+
+		if (ReqClasses <= 0)
+			return 100.0;
+
+		return (classesTaken / ReqClasses) * 100;
+
+	}
+
+	public static DataPoint[] getMonthData(String date, String ID) throws Exception {
+
+		LocalDate monthDate = DatabaseCore.isValidDate(date);
+
+		LocalDate firstDayOfMonth = monthDate.with(TemporalAdjusters.firstDayOfMonth());
+		LocalDate lastDayOfMonth = monthDate.with(TemporalAdjusters.lastDayOfMonth());
+
+		LocalDate current = firstDayOfMonth;
+		int weeks = 0;
+
+		while (!current.isAfter(lastDayOfMonth)) {
+
+			weeks++;
+			current.plusWeeks(1);
+
+		}
+
+		DataPoint[] monthData = new DataPoint[weeks];
+
+		current = firstDayOfMonth;
+
+		for (int i = 0; i < monthData.length; i++) {
+
+			LocalDate startOfWeek = current.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+			LocalDate endOfWeek = current.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+			
+			int hours = AttendanceModule.getHoursOverRange(startOfWeek.toString(), endOfWeek.toString(), ID);
+			
+			DataPoint weekData = new DataPoint("Week " + (i+1), hours, "%d Hours");
+			monthData[i] = weekData;
+
+		}
+
+		return monthData;
 
 	}
 
