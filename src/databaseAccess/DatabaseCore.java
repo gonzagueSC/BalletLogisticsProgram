@@ -3,6 +3,7 @@ package databaseAccess;
 import java.io.*;
 import java.time.*;
 import java.time.format.*;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -73,13 +74,13 @@ public class DatabaseCore {
 		return fullFile.toArray(new String[0]);
 
 	}
-	
+
 	public static String getLine(File readFile, int index) throws Exception {
-		
+
 		String[] file = DatabaseCore.returnFileExcerpt(readFile, 0, index);
-		
+
 		return file[index];
-		
+
 	}
 
 	public static String[] returnFileExcerpt(File readFile, int startLine, int endLine)
@@ -204,48 +205,48 @@ public class DatabaseCore {
 
 	public static int getLineIndex(File database, String regex, String... args)
 			throws IOException, IndexOutOfBoundsException {
-		
+
 		// CREATE A FILE READER FOR THE FILE GIVEN
 
-				BufferedReader fileReader = new BufferedReader(new FileReader(database));
+		BufferedReader fileReader = new BufferedReader(new FileReader(database));
 
-				// LOOPS THROUGH THE ENTIRE FILE WORST CASE
+		// LOOPS THROUGH THE ENTIRE FILE WORST CASE
 
-				String nextLine;
-				int index = 0;
+		String nextLine;
+		int index = 0;
 
-				while ((nextLine = fileReader.readLine()) != null) {
+		while ((nextLine = fileReader.readLine()) != null) {
 
-					String[] line = nextLine.split(regex);
+			String[] line = nextLine.split(regex);
 
-					// IF THERE IS A LINE THAT DOESN'T HAVE ENOUGH ARGUMENTS TO MATCH THE GIVEN
-					// ARGUMENTS, THROW AN EXCEPTION
+			// IF THERE IS A LINE THAT DOESN'T HAVE ENOUGH ARGUMENTS TO MATCH THE GIVEN
+			// ARGUMENTS, THROW AN EXCEPTION
 
-					if (line.length < args.length && !nextLine.isBlank()) {
-
-						fileReader.close();
-						throw new IndexOutOfBoundsException("Too many parsing arguments | line: " + Arrays.toString(line)
-								+ ", args: " + Arrays.toString(args));
-
-					}
-
-					// IF THE LINE MATCHES THE GIVEN ARGUMENTS, THEN RETURN TRUE EARLY
-
-					if (DatabaseCore.compareArguments(line, args)) {
-
-						fileReader.close();
-						return index;
-
-					}
-					
-					index++;
-
-				}
-
-				// CLOSE THE FILE READER AND RETURN FALSE IF THE LINE WAS NOT FOUND
+			if (line.length < args.length && !nextLine.isBlank()) {
 
 				fileReader.close();
-				return -1;
+				throw new IndexOutOfBoundsException("Too many parsing arguments | line: " + Arrays.toString(line)
+						+ ", args: " + Arrays.toString(args));
+
+			}
+
+			// IF THE LINE MATCHES THE GIVEN ARGUMENTS, THEN RETURN TRUE EARLY
+
+			if (DatabaseCore.compareArguments(line, args)) {
+
+				fileReader.close();
+				return index;
+
+			}
+
+			index++;
+
+		}
+
+		// CLOSE THE FILE READER AND RETURN FALSE IF THE LINE WAS NOT FOUND
+
+		fileReader.close();
+		return -1;
 
 	}
 
@@ -505,11 +506,25 @@ public class DatabaseCore {
 
 	public static boolean isBetweenDates(String checkDate, String startDate, String endDate) {
 
-		LocalDate toCheck = LocalDate.parse(checkDate);
-		LocalDate start = LocalDate.parse(startDate);
-		LocalDate end = LocalDate.parse(endDate);
+		LocalDateTime toCheck;
+		LocalDateTime start;
+		LocalDateTime end;
 
-		return !toCheck.isBefore(start) && !toCheck.isAfter(end);
+		try {
+
+			toCheck = DatabaseCore.isValidDateTime(checkDate);
+			start = DatabaseCore.isValidDateTime(startDate);
+			end = DatabaseCore.isValidDateTime(endDate);
+
+			return !toCheck.isBefore(start) && !toCheck.isAfter(end);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return false;
+
+		}
 
 	}
 
@@ -615,12 +630,31 @@ public class DatabaseCore {
 				// Long Formats
 				"MMM dd, yyyy h:mm a", // Nov 26, 2025 7:30 PM
 				"MMMM dd, yyyy h:mm a", // November 26, 2025 7:30 PM
-				"dd-MMM-yyyy HH:mm" // 26-Nov-2025 19:30 (European/24hr)
-		);
+				"dd-MMM-yyyy HH:mm", // 26-Nov-2025 19:30 (European/24hr)
+				"yyyy-MM-dd'T'hh:mm:ss.SSS", // ISO Standard
+				"yyyy-MM-dd'T'hh:mm:ss.SSSSS", "yyyy-MM-dd'T'hh:mm:ss.SSSSSS");
 
 		if (dateTimeString == null || dateTimeString.trim().isEmpty()) {
 
 			return null;
+
+		}
+
+		try {
+
+			LocalDate check = DatabaseCore.isValidDate(dateTimeString);
+			LocalDateTime val = check.atStartOfDay();
+			return val;
+
+		} catch (Exception e) {
+
+		}
+
+		try {
+
+			return LocalDateTime.parse(dateTimeString);
+
+		} catch (Exception e) {
 
 		}
 
@@ -634,6 +668,7 @@ public class DatabaseCore {
 				// 2. Create the formatter with specific rules for leniency and
 				// internationalization
 				DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern(pattern)
+						.appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
 						// Use ResolverStyle.LENIENT for forgiving parsing (e.g., 2025-02-30 ->
 						// 2025-03-02)
 						.toFormatter(Locale.US)
@@ -889,28 +924,29 @@ public class DatabaseCore {
 		return "404";
 
 	}
-	
+
 	public static int getUnitsBetweenTimes(String startTime, String endTime, String units) throws Exception {
-		
+
 		if (!units.equals(Globals.MINUTES) && !units.equals(Globals.HOURS) && !units.equals(Globals.DAYS)) {
-			
+
 			return -1;
-			
+
 		}
-		
+
 		LocalDateTime start = DatabaseCore.isValidDateTime(startTime);
 		LocalDateTime end = DatabaseCore.isValidDateTime(endTime);
-		
-		long time = switch(units) {
+
+		long time = switch (units) {
+
 		case Globals.MINUTES -> ChronoUnit.MINUTES.between(start, end);
 		case Globals.HOURS -> ChronoUnit.HOURS.between(start, end);
 		case Globals.DAYS -> ChronoUnit.DAYS.between(start, end);
-		default ->
-			throw new IllegalArgumentException("Unexpected value: " + units);
+		default -> throw new IllegalArgumentException("Unexpected value: " + units);
+
 		};
-		
+
 		return Math.round(time);
-		
+
 	}
 
 }

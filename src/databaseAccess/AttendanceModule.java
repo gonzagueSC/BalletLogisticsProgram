@@ -343,8 +343,8 @@ public class AttendanceModule {
 			if (DatabaseCore.isBetweenDates(record.split(":\\s")[0].split(" ")[1], startDate, endDate)) {
 
 				attendanceWithinRange.add(record);
-				String startTime = record.split(":\\s")[1].split(" ")[0];
-				String endTime = record.split(":\\s")[1].split(" ")[1];
+				String startTime = record.split(":\\s")[0].split(" ")[1] + " " + record.split(":\\s")[1].split(" ")[0];
+				String endTime = record.split(":\\s")[0].split(" ")[1] + " " + record.split(":\\s")[1].split(" ")[1];
 
 				int sessionMinutes = DatabaseCore.getUnitsBetweenTimes(startTime, endTime, Globals.MINUTES);
 				minutes += sessionMinutes;
@@ -470,29 +470,29 @@ public class AttendanceModule {
 		return (classesTaken / ReqClasses) * 100;
 
 	}
-	
+
 	public static DataPoint[] getYearData(String date, String ID) throws Exception {
 
-		LocalDate monthDate = DatabaseCore.isValidDate(date);
+		LocalDateTime monthDate = DatabaseCore.isValidDateTime(date);
 
-		LocalDate firstDayOfYear = monthDate.with(TemporalAdjusters.firstDayOfYear());
-		LocalDate lastDayOfYear = monthDate.with(TemporalAdjusters.lastDayOfYear());
+		LocalDateTime firstDayOfYear = monthDate.with(TemporalAdjusters.firstDayOfYear());
+		LocalDateTime lastDayOfYear = monthDate.with(TemporalAdjusters.lastDayOfYear());
 
-		LocalDate current = firstDayOfYear;
+		LocalDateTime current = firstDayOfYear;
 
 		DataPoint[] yearData = new DataPoint[12];
 
 		for (int i = 0; i < yearData.length; i++) {
 
-			LocalDate startOfMonth = current.with(TemporalAdjusters.firstDayOfMonth());
-			LocalDate endOfMonth = current.with(TemporalAdjusters.lastDayOfMonth());
-			
+			LocalDateTime startOfMonth = current.with(TemporalAdjusters.firstDayOfMonth());
+			LocalDateTime endOfMonth = current.with(TemporalAdjusters.lastDayOfMonth());
+
 			int hours = AttendanceModule.getHoursOverRange(startOfMonth.toString(), endOfMonth.toString(), ID);
-			
+
 			DataPoint weekData = new DataPoint(Globals.Months[i], hours, "%d Hours");
 			yearData[i] = weekData;
-			
-			current.plusMonths(1);
+
+			current = current.plusMonths(1);
 
 		}
 
@@ -502,13 +502,13 @@ public class AttendanceModule {
 
 	public static DataPoint[] getMonthData(String date, String ID) throws Exception {
 
-		LocalDate monthDate = DatabaseCore.isValidDate(date);
+		LocalDateTime monthDate = DatabaseCore.isValidDateTime(date);
 
-		LocalDate firstDayOfMonth = monthDate.with(TemporalAdjusters.firstDayOfMonth());
-		LocalDate lastDayOfMonth = monthDate.with(TemporalAdjusters.lastDayOfMonth());
+		LocalDateTime firstDayOfMonth = monthDate.with(TemporalAdjusters.firstDayOfMonth());
+		LocalDateTime lastDayOfMonth = monthDate.with(TemporalAdjusters.lastDayOfMonth());
 
-		LocalDate current = firstDayOfMonth;
-		int weeks = 0;
+		LocalDateTime current = firstDayOfMonth;
+		int weeks = 1;
 
 		while (!current.isAfter(lastDayOfMonth)) {
 
@@ -516,8 +516,6 @@ public class AttendanceModule {
 			current = current.plusWeeks(1);
 
 		}
-		
-		System.err.println("Found number of weeks");
 
 		DataPoint[] monthData = new DataPoint[weeks];
 
@@ -525,47 +523,43 @@ public class AttendanceModule {
 
 		for (int i = 0; i < monthData.length; i++) {
 
-			LocalDate startOfWeek = current.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-			LocalDate endOfWeek = current.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
-			
+			LocalDateTime startOfWeek = current.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+			LocalDateTime endOfWeek = current.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+
 			int hours = AttendanceModule.getHoursOverRange(startOfWeek.toString(), endOfWeek.toString(), ID);
-			
-			DataPoint weekData = new DataPoint("Week " + (i+1), hours, "%d Hours");
+
+			DataPoint weekData = new DataPoint("Week " + (i + 1), hours, "%d Hours");
 			monthData[i] = weekData;
-			
-			current.plusWeeks(1);
+
+			current = current.plusWeeks(1);
 
 		}
-		
-		System.err.println("All done");
 
 		return monthData;
 
 	}
-	
+
 	public static DataPoint[] getWeekData(String date, String ID) throws Exception {
 
-		LocalDate monthDate = DatabaseCore.isValidDate(date);
+		LocalDateTime weekDate = DatabaseCore.isValidDateTime(date);
 
-		LocalDate firstDayOfWeek = monthDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-		LocalDate lastDayOfWeek = monthDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+		LocalDateTime firstDayOfWeek = weekDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+		LocalDateTime lastDayOfWeek = weekDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
 
-		LocalDate current = firstDayOfWeek;
+		LocalDateTime current = firstDayOfWeek;
 
 		DataPoint[] WeekData = new DataPoint[7];
 
 		for (int i = 0; i < WeekData.length; i++) {
 
-			LocalDate startOfWeek = current.with(TemporalAdjusters.firstDayOfMonth());
-			LocalDate endOfWeek = current.with(TemporalAdjusters.lastDayOfMonth());
-
-			int hours = AttendanceModule.getHoursOverRange(startOfWeek.toString(), endOfWeek.toString(), ID);
+			int hours = AttendanceModule.getHoursOverRange(current.toLocalDate().atStartOfDay().toString(),
+					current.toLocalDate().atTime(LocalTime.MAX).toString(), ID);
 
 			DataPoint dayData = new DataPoint(Globals.DaysOfTheWeek[i], hours, "%d Hours");
 			dayData.setFinal(true);
 			WeekData[i] = dayData;
-			
-			current.plusDays(1);
+
+			current = current.plusDays(1);
 
 		}
 
