@@ -12,8 +12,8 @@ import util.DataPoint;
 
 public class BasicGraph extends Panel {
 
-	DataPoint[] dataPoints;
-	int highestVal = 0;
+	DataPoint[] dataPoints = new DataPoint[0];
+	double highestVal = 0;
 	int UpperBound;
 	int minHeight = 10;
 	String label = "N/A";
@@ -53,6 +53,19 @@ public class BasicGraph extends Panel {
 	public void setSize(int X, int Y) {
 
 		this.setBounds(this.getBounds().x, this.getBounds().y, X, Y);
+
+		leftMarginX = this.getSize().width / 20;
+		rightMarginX = this.getSize().width - this.getSize().width / 20;
+
+		topMarginY = (int) (this.getSize().height / 5.0);
+		labelMarginY = (int) (topMarginY / 3.0 * 2);
+		bottomMarginY = this.getSize().height - (int) (this.getSize().height / 10.0);
+
+		startX = leftMarginX + (rightMarginX - leftMarginX) / 20;
+		endX = rightMarginX - (rightMarginX - leftMarginX) / 20;
+		intervalX = (int) ((endX - startX) / ((double) (dataPoints.length - 1)));
+
+		pointRadius = 2;
 
 		this.swapData(dataPoints);
 
@@ -131,7 +144,7 @@ public class BasicGraph extends Panel {
 
 		}
 
-		UpperBound = (int) Math.max(Math.round(highestVal * 1.05), minHeight);
+		UpperBound = (int) Math.max(Math.round(highestVal * 1.1), minHeight);
 
 		this.revalidate();
 

@@ -77,7 +77,7 @@ public class DatabaseCore {
 
 	public static String getLine(File readFile, int index) throws Exception {
 
-		String[] file = DatabaseCore.returnFileExcerpt(readFile, 0, index);
+		String[] file = DatabaseCore.returnFileExcerpt(readFile, 0, index+1);
 
 		return file[index];
 
@@ -939,8 +939,8 @@ public class DatabaseCore {
 		long time = switch (units) {
 
 		case Globals.MINUTES -> ChronoUnit.MINUTES.between(start, end);
-		case Globals.HOURS -> ChronoUnit.HOURS.between(start, end);
-		case Globals.DAYS -> ChronoUnit.DAYS.between(start, end);
+		case Globals.HOURS -> Math.round(ChronoUnit.MINUTES.between(start, end) / 60.0);
+		case Globals.DAYS -> Math.round(ChronoUnit.HOURS.between(start, end) / 24.0);
 		default -> throw new IllegalArgumentException("Unexpected value: " + units);
 
 		};

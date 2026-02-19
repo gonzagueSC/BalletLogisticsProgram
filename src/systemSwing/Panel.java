@@ -1,6 +1,9 @@
 package systemSwing;
 
 import javax.swing.JPanel;
+
+import swingConstants.CoreVariables;
+
 import static util.SwingConstants.*;
 
 import java.awt.*;

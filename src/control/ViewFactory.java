@@ -461,8 +461,6 @@ public class ViewFactory {
 
 			switch (name) {
 			
-			case ViewConstants.ADMIN_ATTENDANCE_VIEW:
-				adminAttendanceView.Update(param1, java.time.temporal.ChronoUnit.valueOf(param2), param3);
 
 			}
 			

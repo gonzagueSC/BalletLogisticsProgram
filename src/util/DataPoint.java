@@ -16,9 +16,9 @@ import javax.swing.JPopupMenu;
 public class DataPoint extends JButton {
 
 	private String desc;
-	private int value;
+	private double value;
 
-	public DataPoint(String descriptor, int pointVal, String regex) {
+	public DataPoint(String descriptor, double pointVal, String regex) {
 
 		desc = descriptor;
 		value = pointVal;
@@ -53,7 +53,7 @@ public class DataPoint extends JButton {
 
 	}
 
-	public int getValue() {
+	public double getValue() {
 
 		return value;
 

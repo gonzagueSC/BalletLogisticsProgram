@@ -49,6 +49,7 @@ public class Main {
 		panel.add(deckPanel);
 
 		frame.setVisible(true);
+		
 
 	}
 

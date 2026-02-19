@@ -330,7 +330,7 @@ public class AttendanceModule {
 
 	}
 
-	public static int getHoursOverRange(String startDate, String endDate, String studentID) throws Exception {
+	public static double getHoursOverRange(String startDate, String endDate, String studentID) throws Exception {
 
 		int minutes = 0;
 
@@ -355,20 +355,23 @@ public class AttendanceModule {
 
 		float preciseHours = minutes / 60.0f;
 
-		return Math.round(preciseHours);
+		return preciseHours;
 
 	}
 
 	public static double getComplianceScoreOverRange(String startDate, String endDate, String studentID)
 			throws Exception {
 
-		int classesPerWeek = Integer
-				.parseInt(
+		double classesPerWeek = Double
+				.parseDouble(
 						SystemSettingsModule
 								.getSystemDetail(SystemSettingsModule.LEVELS,
 										StudentsModule.getStudentDetail(studentID, DatabaseUtilities.LEVEL))
 								.split(", ")[2]);
-		int daysBetweenDates = DatabaseCore.getUnitsBetweenTimes(startDate, endDate, Globals.DAYS);
+		double daysBetweenDates = DatabaseCore.getUnitsBetweenTimes(
+				databaseAccess.DatabaseCore.isValidDateTime(startDate).toLocalDate().atStartOfDay().toString(),
+				databaseAccess.DatabaseCore.isValidDateTime(endDate).toLocalDate().atTime(LocalTime.MAX).toString(),
+				Globals.DAYS);
 		double weeks = daysBetweenDates / 7.0;
 
 		String[] statusChanges = AttendanceModule.getAllStatusRecords(studentID);
@@ -383,8 +386,9 @@ public class AttendanceModule {
 
 					if (DatabaseCore.isValidDateTime(startDate).isBefore(DatabaseCore.isValidDateTime(changeDate))) {
 
-						int daysSinceOut = DatabaseCore.getUnitsBetweenTimes(changeDate, endDate, Globals.DAYS);
+						double daysSinceOut = DatabaseCore.getUnitsBetweenTimes(changeDate, endDate, Globals.DAYS);
 						double weeksSinceOut = daysSinceOut / 7.0;
+
 						weeks -= weeksSinceOut;
 
 					} else {
@@ -487,9 +491,9 @@ public class AttendanceModule {
 			LocalDateTime startOfMonth = current.with(TemporalAdjusters.firstDayOfMonth());
 			LocalDateTime endOfMonth = current.with(TemporalAdjusters.lastDayOfMonth());
 
-			int hours = AttendanceModule.getHoursOverRange(startOfMonth.toString(), endOfMonth.toString(), ID);
+			double hours = AttendanceModule.getHoursOverRange(startOfMonth.toString(), endOfMonth.toString(), ID);
 
-			DataPoint weekData = new DataPoint(Globals.Months[i], hours, "%d Hours");
+			DataPoint weekData = new DataPoint(Globals.Months[i].substring(0, 3), hours, "%.0f Hours");
 			yearData[i] = weekData;
 
 			current = current.plusMonths(1);
@@ -497,6 +501,18 @@ public class AttendanceModule {
 		}
 
 		return yearData;
+
+	}
+
+	public static double getYearComplianceScore(String date, String ID) throws Exception {
+
+		LocalDateTime monthDate = DatabaseCore.isValidDateTime(date);
+
+		LocalDateTime firstDayOfYear = monthDate.with(TemporalAdjusters.firstDayOfYear());
+		LocalDateTime lastDayOfYear = monthDate.with(TemporalAdjusters.lastDayOfYear());
+
+		return Math.round(databaseAccess.AttendanceModule.getComplianceScoreOverRange(firstDayOfYear.toString(),
+				lastDayOfYear.toString(), ID) * 100) / 100.0;
 
 	}
 
@@ -526,9 +542,11 @@ public class AttendanceModule {
 			LocalDateTime startOfWeek = current.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 			LocalDateTime endOfWeek = current.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
 
-			int hours = AttendanceModule.getHoursOverRange(startOfWeek.toString(), endOfWeek.toString(), ID);
+			double hours = AttendanceModule.getHoursOverRange(startOfWeek.toString(), endOfWeek.toString(), ID);
 
-			DataPoint weekData = new DataPoint("Week " + (i + 1), hours, "%d Hours");
+			DataPoint weekData = new DataPoint("Week " + (i + 1), hours,
+					"%.0f Hours\n" + startOfWeek.toLocalDate().toString().substring(5) + " - "
+							+ endOfWeek.toLocalDate().toString().substring(5));
 			monthData[i] = weekData;
 
 			current = current.plusWeeks(1);
@@ -536,6 +554,18 @@ public class AttendanceModule {
 		}
 
 		return monthData;
+
+	}
+
+	public static double getMonthComplianceScore(String date, String ID) throws Exception {
+
+		LocalDateTime monthDate = DatabaseCore.isValidDateTime(date);
+
+		LocalDateTime firstDayOfMonth = monthDate.with(TemporalAdjusters.firstDayOfMonth());
+		LocalDateTime lastDayOfMonth = monthDate.with(TemporalAdjusters.lastDayOfMonth());
+
+		return Math.round(databaseAccess.AttendanceModule.getComplianceScoreOverRange(firstDayOfMonth.toString(),
+				lastDayOfMonth.toString(), ID) * 100) / 100.0;
 
 	}
 
@@ -552,10 +582,11 @@ public class AttendanceModule {
 
 		for (int i = 0; i < WeekData.length; i++) {
 
-			int hours = AttendanceModule.getHoursOverRange(current.toLocalDate().atStartOfDay().toString(),
+			double hours = AttendanceModule.getHoursOverRange(current.toLocalDate().atStartOfDay().toString(),
 					current.toLocalDate().atTime(LocalTime.MAX).toString(), ID);
 
-			DataPoint dayData = new DataPoint(Globals.DaysOfTheWeek[i], hours, "%d Hours");
+			DataPoint dayData = new DataPoint(Globals.DaysOfTheWeek[i], hours,
+					"%.0f Hours\n" + current.toLocalDate().toString());
 			dayData.setFinal(true);
 			WeekData[i] = dayData;
 
@@ -564,6 +595,18 @@ public class AttendanceModule {
 		}
 
 		return WeekData;
+
+	}
+
+	public static double getWeekComplianceScore(String date, String ID) throws Exception {
+
+		LocalDateTime weekDate = DatabaseCore.isValidDateTime(date);
+
+		LocalDateTime firstDayOfWeek = weekDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+		LocalDateTime lastDayOfWeek = weekDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+
+		return Math.round(databaseAccess.AttendanceModule.getComplianceScoreOverRange(firstDayOfWeek.toString(),
+				lastDayOfWeek.toString(), ID) * 100) / 100.0;
 
 	}
 

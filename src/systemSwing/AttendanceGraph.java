@@ -11,6 +11,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 
+import SwingCards.AdminAttendanceDataView;
 import databaseAccess.DatabaseCore;
 import util.DataPoint;
 import util.Globals;
@@ -18,32 +19,79 @@ import util.Globals;
 public class AttendanceGraph extends BasicGraph {
 
 	private String currentDay;
-	private ChronoUnit currentScope;
+	private ChronoUnit currentScope = ChronoUnit.YEARS;
 	private String currentID;
 	private Button year, month, week, forward, back;
+	
+	private AdminAttendanceDataView parent;
 
 	int buttonIntervals = 10;
 	int buttonWidth = (this.getWidth() - buttonIntervals * 6) / 5;
 
 	ChronoUnit[] times = { ChronoUnit.YEARS, ChronoUnit.MONTHS, ChronoUnit.WEEKS };
 
-	public AttendanceGraph(String date, ChronoUnit scope, String ID) {
+	public AttendanceGraph(AdminAttendanceDataView parent) {
 
 		super(new DataPoint[0]);
-
-		currentScope = scope;
-
-		currentID = ID;
-
-		currentDay = date;
+		
+		this.parent = parent;
 
 		this.setSize(0, 0);
 
-		swapData(date, scope, ID);
+		super.swapData(new DataPoint[0]);
 
 		this.revalidate();
 		this.repaint();
 
+	}
+	
+	public double getTotalHoursOverRange() {
+		
+		double total = 0;
+		
+		for (DataPoint data: dataPoints) {
+			
+			total += data.getValue();
+			
+		}
+		
+		return total;
+		
+	}
+	
+	public double getComplianceScoreOverRange() {
+		
+		int index = switch (currentScope) {
+
+		case ChronoUnit.YEARS -> 0;
+		case ChronoUnit.MONTHS -> 1;
+		case ChronoUnit.WEEKS -> 2;
+
+		default -> throw new IllegalArgumentException("Unexpected value: " + currentScope.name());
+
+		};
+		
+		try {
+
+			switch (index) {
+			
+			case 0:
+				return databaseAccess.AttendanceModule.getYearComplianceScore(currentDay, currentID);
+			case 1:
+				return databaseAccess.AttendanceModule.getMonthComplianceScore(currentDay, currentID);
+			case 2:
+				return databaseAccess.AttendanceModule.getWeekComplianceScore(currentDay, currentID);
+			
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		
+		return -1.0;
+		
 	}
 	
 	@Override
@@ -77,12 +125,8 @@ public class AttendanceGraph extends BasicGraph {
 		back = new Button("←", (e -> {
 
 			try {
-				
-				System.out.println(times[index].toString() + "back started");
 
 				swapData(DatabaseCore.isValidDateTime(currentDay).minus(1, times[index]).toString(), currentScope, currentID);
-				
-				System.out.println("Finished move. New date: " + DatabaseCore.isValidDateTime(currentDay).toLocalDate().toString());
 
 			} catch (Exception e1) {
 
@@ -178,6 +222,8 @@ public class AttendanceGraph extends BasicGraph {
 		currentID = ID;
 
 		currentDay = date;
+		
+		this.setSize(this.getWidth(), this.getHeight());
 
 		switch (scope) {
 
@@ -271,6 +317,16 @@ public class AttendanceGraph extends BasicGraph {
 			e.printStackTrace();
 
 		}
+		
+		if (parent != null) parent.UpdateData();
+
+	}
+	
+	public void swapData(String ID) {
+
+		swapData(LocalDateTime.now().toString(), ChronoUnit.MONTHS, ID);
+		parent.UpdateData();
+		
 
 	}
 
