@@ -288,27 +288,6 @@ public class AttendanceModule {
 
 	}
 
-	public static String[] getAllAttendanceRecords(String studentID) throws Exception {
-
-		File database = StudentsModule.getStudentFile(studentID);
-		String[] allFile = DatabaseCore.returnAllFile(database);
-
-		ArrayList<String> fullFile = new ArrayList<String>();
-
-		for (String record : allFile) {
-
-			if (record.matches(Globals.ATTENDANCE + ".*")) {
-
-				fullFile.add(record);
-
-			}
-
-		}
-
-		return fullFile.toArray(new String[0]);
-
-	}
-
 	public static String[] getAllStatusRecords(String studentID) throws Exception {
 
 		File database = StudentsModule.getStudentFile(studentID);
@@ -334,7 +313,7 @@ public class AttendanceModule {
 
 		int minutes = 0;
 
-		String[] attendanceRecords = AttendanceModule.getAllAttendanceRecords(studentID);
+		String[] attendanceRecords = StudentsModule.getAllRecords(studentID, Globals.ATTENDANCE);
 
 		ArrayList<String> attendanceWithinRange = new ArrayList<String>();
 
@@ -451,7 +430,7 @@ public class AttendanceModule {
 
 		}
 
-		String[] attendanceRecords = AttendanceModule.getAllAttendanceRecords(studentID);
+		String[] attendanceRecords = StudentsModule.getAllRecords(studentID, Globals.ATTENDANCE);
 
 		int classesTaken = 0;
 

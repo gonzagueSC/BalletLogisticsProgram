@@ -8,6 +8,8 @@ import java.time.YearMonth;
 import java.time.temporal.TemporalAdjusters;
 
 import util.DataPoint;
+import util.Globals;
+
 import java.util.*;
 
 import control.Main;
@@ -16,49 +18,51 @@ import databaseConstants.*;
 import swingConstants.ViewConstants;
 
 public class StudentsModule {
-	
+
 	/**
-	 * Adds a student to the system with as 8 data values:
-	 * First Name, Last Name, Level, Email, Phone Number, Medical Conditions, Date Of Birth, Gender
+	 * Adds a student to the system with as 8 data values: First Name, Last Name,
+	 * Level, Email, Phone Number, Medical Conditions, Date Of Birth, Gender
+	 * 
 	 * @param strings
 	 */
-	
-	public static void addStudent(String...strings) {
-		
+
+	public static void addStudent(String... strings) {
+
 		String studentName = strings[0] + " " + strings[1];
 		String birthDate = strings[6];
-		
+
 		String info = "";
-		
+
 		for (int i = 0; i < databaseConstants.DatabaseUtilities.StudentInfo.length; i++) {
-			
+
 			if (i < 8) {
-				
+
 				info += strings[i] + "\n";
-				
+
 			} else if (i == 8) {
-				
+
 				info += LocalDate.now().toString() + "\n";
-				
+
 			} else if (i == 10) {
-				
+
 				info += "Active\n";
-				
+
 			} else if (i == 12) {
-				
+
 				info += "0\n";
-				
+
 			} else {
-				
+
 				info += "-1\n";
-				
+
 			}
-			
+
 		}
-		
+
 		String ID = Long.toString(System.currentTimeMillis());
-		
-		if (StudentsModule.checkForDuplicateStudent(databaseConstants.Databases.RegisteredStudents, studentName, birthDate)) {
+
+		if (StudentsModule.checkForDuplicateStudent(databaseConstants.Databases.RegisteredStudents, studentName,
+				birthDate)) {
 
 			PromptsService.FailurePrompt("Student is already in the database");
 
@@ -69,7 +73,8 @@ public class StudentsModule {
 				// WRITING HERE WRITING HERE WRITING HERE WRITING HERE WRITING HERE WRITING HERE
 				// WRITING HERE
 
-				DatabaseCore.writeToDatabase(databaseConstants.Databases.RegisteredStudents, studentName + " " + birthDate + " " + ID);
+				DatabaseCore.writeToDatabase(databaseConstants.Databases.RegisteredStudents,
+						studentName + " " + birthDate + " " + ID);
 				File newFile = DatabaseCore.CreateFile(DatabaseFolders.StudentsFolder, ID);
 				int completion = DatabaseCore.writeToDatabase(newFile, info);
 				Main.Router.showView(ViewConstants.ADMIN_VIEW);
@@ -87,18 +92,17 @@ public class StudentsModule {
 			}
 
 		}
-		
+
 	}
 
 	public static String[] getStudentInfo(String name, String birthDate) {
-
 
 		// RETURN THE ARRAY OF STUDENT DETAILS
 
 		return getStudentInfo(StudentsModule.getStudentID(name, birthDate));
 
 	}
-	
+
 	public static String[] getStudentInfo(String ID) {
 
 		String[] studentDetails = new String[DatabaseUtilities.StudentInfo.length];
@@ -124,11 +128,11 @@ public class StudentsModule {
 		return studentDetails;
 
 	}
-	
+
 	public static String getStudentDetail(String name, String birthDate, String detail) {
-		
-		int index = switch(detail) {
-		
+
+		int index = switch (detail) {
+
 		case DatabaseUtilities.FIRST_NAME -> 0;
 		case DatabaseUtilities.LAST_NAME -> 1;
 		case DatabaseUtilities.LEVEL -> 2;
@@ -153,17 +157,17 @@ public class StudentsModule {
 		case DatabaseUtilities.BACK_LENGTH -> 21;
 		case DatabaseUtilities.SHOE_SIZE -> 22;
 		default -> throw new IllegalArgumentException("Unexpected value: " + detail);
-		
+
 		};
-		
+
 		return getStudentInfo(name, birthDate)[index];
-		
+
 	}
-	
-public static String getStudentDetail(String ID, String detail) {
-		
-		int index = switch(detail) {
-		
+
+	public static String getStudentDetail(String ID, String detail) {
+
+		int index = switch (detail) {
+
 		case DatabaseUtilities.FIRST_NAME -> 0;
 		case DatabaseUtilities.LAST_NAME -> 1;
 		case DatabaseUtilities.LEVEL -> 2;
@@ -188,11 +192,11 @@ public static String getStudentDetail(String ID, String detail) {
 		case DatabaseUtilities.BACK_LENGTH -> 21;
 		case DatabaseUtilities.SHOE_SIZE -> 22;
 		default -> throw new IllegalArgumentException("Unexpected value: " + detail);
-		
+
 		};
-		
+
 		return getStudentInfo(ID)[index];
-		
+
 	}
 
 	public static String[] getAllStudentNames(String[] filters) {
@@ -498,13 +502,12 @@ public static String getStudentDetail(String ID, String detail) {
 		StudentsModule.addStudentToRole(studentID, productionName, role, casts);
 
 		try {
-			
-			File studentFile = new File(DatabaseFolders.StudentsFolder,
-					studentID);
+
+			File studentFile = new File(DatabaseFolders.StudentsFolder, studentID);
 			BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
-			studentFixer.write(String.format(StudentLogFormats.CastingFormat, LocalDate.now().toString(),
-					role, Arrays.toString(casts)) + "\n");
+			studentFixer.write(String.format(StudentLogFormats.CastingFormat, LocalDate.now().toString(), role,
+					Arrays.toString(casts)) + "\n");
 			// IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
 			studentFixer.close();
@@ -514,8 +517,6 @@ public static String getStudentDetail(String ID, String detail) {
 			e.printStackTrace();
 
 		}
-		
-		
 
 	}
 
@@ -718,7 +719,8 @@ public static String getStudentDetail(String ID, String detail) {
 				BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
 				studentFixer.write(
-						String.format(StudentLogFormats.ChangeMedicalConditionsFormat, LocalDate.now(), newMedical) + "\n");
+						String.format(StudentLogFormats.ChangeMedicalConditionsFormat, LocalDate.now(), newMedical)
+								+ "\n");
 
 				// IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
@@ -754,7 +756,8 @@ public static String getStudentDetail(String ID, String detail) {
 						StudentsModule.getStudentID(name.trim(), birthDate));
 				BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
-				studentFixer.write(String.format(StudentLogFormats.ChangeFirstNameFormat, LocalDate.now(), newName) + "\n");
+				studentFixer
+						.write(String.format(StudentLogFormats.ChangeFirstNameFormat, LocalDate.now(), newName) + "\n");
 
 				// IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
@@ -790,7 +793,8 @@ public static String getStudentDetail(String ID, String detail) {
 						StudentsModule.getStudentID(name.trim(), birthDate));
 				BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
-				studentFixer.write(String.format(StudentLogFormats.ChangeLastNameFormat, LocalDate.now(), newName) + "\n");
+				studentFixer
+						.write(String.format(StudentLogFormats.ChangeLastNameFormat, LocalDate.now(), newName) + "\n");
 
 				// IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
@@ -825,7 +829,8 @@ public static String getStudentDetail(String ID, String detail) {
 						StudentsModule.getStudentID(name.trim(), birthDate));
 				BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
-				studentFixer.write(String.format(StudentLogFormats.ChangeEmailFormat, LocalDate.now(), newEmail) + "\n");
+				studentFixer
+						.write(String.format(StudentLogFormats.ChangeEmailFormat, LocalDate.now(), newEmail) + "\n");
 
 				// IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
@@ -861,7 +866,8 @@ public static String getStudentDetail(String ID, String detail) {
 						StudentsModule.getStudentID(name.trim(), birthDate));
 				BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
-				studentFixer.write(String.format(StudentLogFormats.ChangeEmailFormat, LocalDate.now(), newPhoneNumber) + "\n");
+				studentFixer.write(
+						String.format(StudentLogFormats.ChangeEmailFormat, LocalDate.now(), newPhoneNumber) + "\n");
 
 				// IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
@@ -898,7 +904,8 @@ public static String getStudentDetail(String ID, String detail) {
 				BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
 				studentFixer
-						.write(String.format(StudentLogFormats.ChangeDateOfBirthFormat, LocalDate.now(), newDateOfBirth) + "\n");
+						.write(String.format(StudentLogFormats.ChangeDateOfBirthFormat, LocalDate.now(), newDateOfBirth)
+								+ "\n");
 
 				// IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
@@ -933,7 +940,8 @@ public static String getStudentDetail(String ID, String detail) {
 						StudentsModule.getStudentID(name.trim(), birthDate));
 				BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
-				studentFixer.write(String.format(StudentLogFormats.ChangeGenderFormat, LocalDate.now(), newGender) + "\n");
+				studentFixer
+						.write(String.format(StudentLogFormats.ChangeGenderFormat, LocalDate.now(), newGender) + "\n");
 
 				// IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
@@ -968,7 +976,8 @@ public static String getStudentDetail(String ID, String detail) {
 						StudentsModule.getStudentID(name.trim(), birthDate));
 				BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
-				studentFixer.write(String.format(StudentLogFormats.ChangeAddressFormat, LocalDate.now(), newAddress) + "\n");
+				studentFixer.write(
+						String.format(StudentLogFormats.ChangeAddressFormat, LocalDate.now(), newAddress) + "\n");
 
 				// IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
@@ -1061,7 +1070,8 @@ public static String getStudentDetail(String ID, String detail) {
 						StudentsModule.getStudentID(name.trim(), birthDate));
 				BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
-				studentFixer.write(String.format(StudentLogFormats.ChangeAddressFormat, LocalDate.now(), newDateJoined) + "\n");
+				studentFixer.write(
+						String.format(StudentLogFormats.ChangeAddressFormat, LocalDate.now(), newDateJoined) + "\n");
 
 				// IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
@@ -1097,8 +1107,8 @@ public static String getStudentDetail(String ID, String detail) {
 						StudentsModule.getStudentID(name.trim(), birthDate));
 				BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
-				studentFixer
-						.write(String.format(StudentLogFormats.ChangeActivityStatusFormat, LocalDate.now(), newStatus) + "\n");
+				studentFixer.write(
+						String.format(StudentLogFormats.ChangeActivityStatusFormat, LocalDate.now(), newStatus) + "\n");
 
 				// IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
@@ -1134,7 +1144,8 @@ public static String getStudentDetail(String ID, String detail) {
 						StudentsModule.getStudentID(name.trim(), birthDate));
 				BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
-				studentFixer.write(String.format(StudentLogFormats.ChangeTuitionPlanFormat, LocalDate.now(), newPlan) + "\n");
+				studentFixer.write(
+						String.format(StudentLogFormats.ChangeTuitionPlanFormat, LocalDate.now(), newPlan) + "\n");
 
 				// IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
@@ -1171,7 +1182,8 @@ public static String getStudentDetail(String ID, String detail) {
 				BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
 				studentFixer
-						.write(String.format(StudentLogFormats.ChangeAccountBalanceFormat, LocalDate.now(), newBalance) + "\n");
+						.write(String.format(StudentLogFormats.ChangeAccountBalanceFormat, LocalDate.now(), newBalance)
+								+ "\n");
 
 				// IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
@@ -1206,7 +1218,8 @@ public static String getStudentDetail(String ID, String detail) {
 						StudentsModule.getStudentID(name.trim(), birthDate));
 				BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
-				studentFixer.write(String.format(StudentLogFormats.ChangeLevelFormat, LocalDate.now(), newLevel) + "\n");
+				studentFixer
+						.write(String.format(StudentLogFormats.ChangeLevelFormat, LocalDate.now(), newLevel) + "\n");
 
 				// IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
@@ -1233,7 +1246,8 @@ public static String getStudentDetail(String ID, String detail) {
 
 		try {
 
-			File studentFile = new File(DatabaseFolders.StudentsFolder, StudentsModule.getStudentID(name.trim(), birthDate));
+			File studentFile = new File(DatabaseFolders.StudentsFolder,
+					StudentsModule.getStudentID(name.trim(), birthDate));
 			BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
 			studentFixer.write(logData + "\n");
@@ -1262,7 +1276,8 @@ public static String getStudentDetail(String ID, String detail) {
 
 		try {
 
-			File studentFile = new File(DatabaseFolders.StudentsFolder, StudentsModule.getStudentID(name.trim(), birthDate));
+			File studentFile = new File(DatabaseFolders.StudentsFolder,
+					StudentsModule.getStudentID(name.trim(), birthDate));
 			BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
 			studentFixer.write(String.format(StudentLogFormats.CastingFormat, LocalDate.now(), role, Casting) + "\n");
@@ -1291,7 +1306,8 @@ public static String getStudentDetail(String ID, String detail) {
 
 		try {
 
-			File studentFile = new File(DatabaseFolders.StudentsFolder, StudentsModule.getStudentID(name.trim(), birthDate));
+			File studentFile = new File(DatabaseFolders.StudentsFolder,
+					StudentsModule.getStudentID(name.trim(), birthDate));
 			BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
 			studentFixer.write(String.format(StudentLogFormats.CastingFormat, LocalDate.now(), Note, Teacher) + "\n");
@@ -1325,11 +1341,11 @@ public static String getStudentDetail(String ID, String detail) {
 
 			File CastFolder = DatabaseCore.CreateFolder(ProductionFolder, casts[i]);
 			File RoleFile = DatabaseCore.CreateFile(CastFolder, role);
-			
+
 			File CostumesFile = DatabaseCore.CreateFile(ProductionFolder, "Costumes");
 
 			DatabaseCore.writeToDatabase(RoleFile, studentID);
-			
+
 			DatabaseCore.writeToDatabase(CostumesFile, studentID + ", Not assigned");
 
 		}
@@ -1430,7 +1446,7 @@ public static String getStudentDetail(String ID, String detail) {
 		return false;
 
 	}
-	
+
 	public static boolean changed(String name, String birthDate, int info, String newVal) {
 
 		// get the current student information
@@ -1445,18 +1461,69 @@ public static String getStudentDetail(String ID, String detail) {
 		return true;
 
 	}
-	
+
 	public static String[] getUpcomingClassesToday(String ID) {
-		
+
 		String studentLevel = StudentsModule.getStudentDetail(ID, DatabaseUtilities.LEVEL);
-		
+
 		return SchedulesModule.getAllUpcomingClassesBelowLevelToday(studentLevel);
-		
+
+	}
+
+	public static File getStudentFile(String ID) {
+
+		return new File(DatabaseFolders.StudentsFolder, ID);
+
+	}
+
+	public static String[] getAllRecords(String studentID, String DataType) throws Exception {
+
+		File database = StudentsModule.getStudentFile(studentID);
+		String[] allFile = DatabaseCore.returnAllFile(database);
+
+		ArrayList<String> fullFile = new ArrayList<String>();
+
+		for (String record : allFile) {
+
+			if (record.matches(DataType + ".*")) {
+
+				fullFile.add(record);
+
+			}
+
+		}
+
+		return fullFile.toArray(new String[0]);
+
+	}
+
+	public static String[] returnAllProfile(String studentID) throws Exception {
+
+		String[] ProfileData = databaseAccess.StudentsModule.getAllRecords(studentID, Globals.PROFILEDATA);
+		String[] AdminNotes = databaseAccess.StudentsModule.getAllRecords(studentID, Globals.ADMINNOTE);
+
+		List<String> returnArray = Arrays.asList(ProfileData);
+		returnArray.addAll(Arrays.asList(AdminNotes));
+
+		return returnArray.toArray(new String[0]);
+
+	}
+
+	public static String[] returnAllProduction(String studentID) throws Exception {
+
+		return databaseAccess.StudentsModule.getAllRecords(studentID, Globals.CASTING);
+
 	}
 	
-	public static File getStudentFile(String ID) {
+	public static String[] returnAllAdmin(String studentID) throws Exception {
 		
-		return new File(DatabaseFolders.StudentsFolder, ID);
+		String[] LevelChanges = databaseAccess.StudentsModule.getAllRecords(studentID, Globals.LEVELCHANGE);
+		String[] FinancialData = databaseAccess.StudentsModule.getAllRecords(studentID, Globals.FINANCIAL);
+
+		List<String> returnArray = Arrays.asList(LevelChanges);
+		returnArray.addAll(Arrays.asList(FinancialData));
+
+		return returnArray.toArray(new String[0]);
 		
 	}
 
