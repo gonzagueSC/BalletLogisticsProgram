@@ -2,6 +2,7 @@ package systemSwing;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.Arrays;
 
 import javax.swing.JPanel;
 
@@ -55,6 +56,18 @@ public class AuditLog extends Panel {
 
         this.ID = studentID;
 
+        String[] studentLogs = {};
+
+        try {
+            studentLogs = databaseAccess.StudentsModule.getAllRecords(this.ID);
+
+            System.out.println(Arrays.toString(studentLogs));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        this.auditLog.receiveLog(studentLogs);
+
     }
 
 
@@ -67,5 +80,4 @@ public class AuditLog extends Panel {
         super.paint(g);
 
     }
-
 }

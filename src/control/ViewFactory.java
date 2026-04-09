@@ -7,513 +7,517 @@ import swingConstants.*;
 
 public class ViewFactory {
 
-	private static final int LOADING_TIME_MS = 100;
-
-	static LoadingView loadingView = new LoadingView();
-	static MainMenuView mainMenuView;
-	static AdminCreationView adminCreationView;
-	static AdminView adminView;
-	static AttendanceView attendanceView;
-	static CostumeMeasurementsView costumeMeasurementsView;
-	static EnrollmentDetailsView enrollmentDetailsView;
-	static IndividualStudentView individualStudentView;
-	static LogInView logInView;
-	static MedicalConditionsView medicalConditionsView;
-	static StudentCreationView studentCreationView;
-	static StudentProfileView studentProfileView;
-	static StudentRepertoryView studentRepertoryView;
-	static ShowDirectoryView showDirectoryView;
-	static ShowMainView showMainView;
-	static SystemSettingsView systemSettingsView;
-	static LevelManagerView levelManagerView;
-	static StudioManagerView studioManagerView;
-	static AdminManagerView adminManagerView;
-	static TeacherManagerView teacherManagerView;
-	static SchedulesMainView schedulesMainView;
-	static StudentView studentView;
-	static TeacherPanelView teacherPanelView;
-	static AdminAttendanceDataView adminAttendanceView;
-
-	public void setUp() {
-
-		Main.Router.setViewToPanel(ViewConstants.LOADING_SCREEN, loadingView);
-
-	}
-
-	public Object getViewFromName(String name) {
-
-		Object View = switch (name) {
-
-		case ViewConstants.MAIN_MENU -> mainMenuView;
-		case ViewConstants.ADMIN_CREATION_VIEW -> adminCreationView;
-		case ViewConstants.ADMIN_VIEW -> adminView;
-		case ViewConstants.ATTENDANCE_VIEW -> attendanceView;
-		case ViewConstants.COSTUME_MEASUREMENTS_VIEW -> costumeMeasurementsView;
-		case ViewConstants.ENROLLMENT_DETAILS_VIEW -> enrollmentDetailsView;
-		case ViewConstants.INDIVIDUAL_STUDENT_VIEW -> individualStudentView;
-		case ViewConstants.LOGIN_VIEW -> logInView;
-		case ViewConstants.MEDICAL_CONDITIONS_VIEW -> medicalConditionsView;
-		case ViewConstants.STUDENT_CREATION_VIEW -> studentCreationView;
-		case ViewConstants.STUDENT_PROFILE_VIEW -> studentProfileView;
-		case ViewConstants.STUDENT_DIRECTORY_VIEW -> studentRepertoryView;
-		case ViewConstants.SHOW_DIRECTORY_VIEW -> showDirectoryView;
-		case ViewConstants.SHOW_VIEW -> showMainView;
-		case ViewConstants.SYSTEM_SETTINGS_VIEW -> systemSettingsView;
-		case ViewConstants.LEVEL_MANAGER_VIEW -> levelManagerView;
-		case ViewConstants.STUDIO_MANAGER_VIEW -> studioManagerView;
-		case ViewConstants.ADMIN_MANAGER_VIEW -> adminManagerView;
-		case ViewConstants.TEACHER_MANAGER_VIEW -> teacherManagerView;
-		case ViewConstants.SCHEDULES_VIEW -> schedulesMainView;
-		case ViewConstants.STUDENT_VIEW -> studentView;
-		case ViewConstants.TEACHER_VIEW -> teacherPanelView;
-		case ViewConstants.ADMIN_ATTENDANCE_VIEW -> adminAttendanceView;
-		default -> throw new IllegalArgumentException("Unexpected value: " + name);
-
-		};
-
-		return View;
-
-	}
-
-	public void generateView(String name) {
-
-		switch (name) {
-
-		case ViewConstants.MAIN_MENU:
-			mainMenuView = new MainMenuView();
-			break;
-
-		case ViewConstants.ADMIN_CREATION_VIEW:
-			adminCreationView = new AdminCreationView();
-			break;
-
-		case ViewConstants.ADMIN_VIEW:
-			adminView = new AdminView();
-			break;
-
-		case ViewConstants.ATTENDANCE_VIEW:
-			attendanceView = new AttendanceView();
-			break;
-
-		case ViewConstants.COSTUME_MEASUREMENTS_VIEW:
-			costumeMeasurementsView = new CostumeMeasurementsView();
-			break;
-
-		case ViewConstants.ENROLLMENT_DETAILS_VIEW:
-			enrollmentDetailsView = new EnrollmentDetailsView();
-			break;
-
-		case ViewConstants.INDIVIDUAL_STUDENT_VIEW:
-			individualStudentView = new IndividualStudentView();
-			break;
+    private static final int LOADING_TIME_MS = 100;
+
+    static LoadingView loadingView = new LoadingView();
+    static MainMenuView mainMenuView;
+    static AdminCreationView adminCreationView;
+    static AdminView adminView;
+    static AttendanceView attendanceView;
+    static CostumeMeasurementsView costumeMeasurementsView;
+    static EnrollmentDetailsView enrollmentDetailsView;
+    static IndividualStudentView individualStudentView;
+    static LogInView logInView;
+    static MedicalConditionsView medicalConditionsView;
+    static StudentCreationView studentCreationView;
+    static StudentProfileView studentProfileView;
+    static StudentRepertoryView studentRepertoryView;
+    static ShowDirectoryView showDirectoryView;
+    static ShowMainView showMainView;
+    static SystemSettingsView systemSettingsView;
+    static LevelManagerView levelManagerView;
+    static StudioManagerView studioManagerView;
+    static AdminManagerView adminManagerView;
+    static TeacherManagerView teacherManagerView;
+    static SchedulesMainView schedulesMainView;
+    static StudentView studentView;
+    static TeacherPanelView teacherPanelView;
+    static AdminAttendanceDataView adminAttendanceView;
+
+    public void setUp() {
+
+        Main.Router.setViewToPanel(ViewConstants.LOADING_SCREEN, loadingView);
+
+    }
+
+    public Object getViewFromName(String name) {
+
+        Object View = switch (name) {
+
+            case ViewConstants.MAIN_MENU -> mainMenuView;
+            case ViewConstants.ADMIN_CREATION_VIEW -> adminCreationView;
+            case ViewConstants.ADMIN_VIEW -> adminView;
+            case ViewConstants.ATTENDANCE_VIEW -> attendanceView;
+            case ViewConstants.COSTUME_MEASUREMENTS_VIEW -> costumeMeasurementsView;
+            case ViewConstants.ENROLLMENT_DETAILS_VIEW -> enrollmentDetailsView;
+            case ViewConstants.INDIVIDUAL_STUDENT_VIEW -> individualStudentView;
+            case ViewConstants.LOGIN_VIEW -> logInView;
+            case ViewConstants.MEDICAL_CONDITIONS_VIEW -> medicalConditionsView;
+            case ViewConstants.STUDENT_CREATION_VIEW -> studentCreationView;
+            case ViewConstants.STUDENT_PROFILE_VIEW -> studentProfileView;
+            case ViewConstants.STUDENT_DIRECTORY_VIEW -> studentRepertoryView;
+            case ViewConstants.SHOW_DIRECTORY_VIEW -> showDirectoryView;
+            case ViewConstants.SHOW_VIEW -> showMainView;
+            case ViewConstants.SYSTEM_SETTINGS_VIEW -> systemSettingsView;
+            case ViewConstants.LEVEL_MANAGER_VIEW -> levelManagerView;
+            case ViewConstants.STUDIO_MANAGER_VIEW -> studioManagerView;
+            case ViewConstants.ADMIN_MANAGER_VIEW -> adminManagerView;
+            case ViewConstants.TEACHER_MANAGER_VIEW -> teacherManagerView;
+            case ViewConstants.SCHEDULES_VIEW -> schedulesMainView;
+            case ViewConstants.STUDENT_VIEW -> studentView;
+            case ViewConstants.TEACHER_VIEW -> teacherPanelView;
+            case ViewConstants.ADMIN_ATTENDANCE_VIEW -> adminAttendanceView;
+            default -> throw new IllegalArgumentException("Unexpected value: " + name);
+
+        };
+
+        return View;
+
+    }
+
+    public void generateView(String name) {
+
+        switch (name) {
+
+            case ViewConstants.MAIN_MENU:
+                mainMenuView = new MainMenuView();
+                break;
+
+            case ViewConstants.ADMIN_CREATION_VIEW:
+                adminCreationView = new AdminCreationView();
+                break;
+
+            case ViewConstants.ADMIN_VIEW:
+                adminView = new AdminView();
+                break;
+
+            case ViewConstants.ATTENDANCE_VIEW:
+                attendanceView = new AttendanceView();
+                break;
+
+            case ViewConstants.COSTUME_MEASUREMENTS_VIEW:
+                costumeMeasurementsView = new CostumeMeasurementsView();
+                break;
 
-		case ViewConstants.LOGIN_VIEW:
-			logInView = new LogInView();
-			break;
+            case ViewConstants.ENROLLMENT_DETAILS_VIEW:
+                enrollmentDetailsView = new EnrollmentDetailsView();
+                break;
 
-		case ViewConstants.MEDICAL_CONDITIONS_VIEW:
-			medicalConditionsView = new MedicalConditionsView();
-			break;
+            case ViewConstants.INDIVIDUAL_STUDENT_VIEW:
+                individualStudentView = new IndividualStudentView();
+                break;
 
-		case ViewConstants.STUDENT_CREATION_VIEW:
-			studentCreationView = new StudentCreationView();
-			break;
+            case ViewConstants.LOGIN_VIEW:
+                logInView = new LogInView();
+                break;
 
-		case ViewConstants.STUDENT_PROFILE_VIEW:
-			studentProfileView = new StudentProfileView();
-			break;
+            case ViewConstants.MEDICAL_CONDITIONS_VIEW:
+                medicalConditionsView = new MedicalConditionsView();
+                break;
 
-		case ViewConstants.STUDENT_DIRECTORY_VIEW:
-			studentRepertoryView = new StudentRepertoryView();
-			break;
+            case ViewConstants.STUDENT_CREATION_VIEW:
+                studentCreationView = new StudentCreationView();
+                break;
 
-		case ViewConstants.SHOW_DIRECTORY_VIEW:
-			showDirectoryView = new ShowDirectoryView();
-			break;
+            case ViewConstants.STUDENT_PROFILE_VIEW:
+                studentProfileView = new StudentProfileView();
+                break;
 
-		case ViewConstants.SHOW_VIEW:
-			showMainView = new ShowMainView();
-			break;
+            case ViewConstants.STUDENT_DIRECTORY_VIEW:
+                studentRepertoryView = new StudentRepertoryView();
+                break;
 
-		case ViewConstants.SYSTEM_SETTINGS_VIEW:
-			systemSettingsView = new SystemSettingsView();
-			break;
+            case ViewConstants.SHOW_DIRECTORY_VIEW:
+                showDirectoryView = new ShowDirectoryView();
+                break;
 
-		case ViewConstants.LEVEL_MANAGER_VIEW:
-			levelManagerView = new LevelManagerView();
-			break;
+            case ViewConstants.SHOW_VIEW:
+                showMainView = new ShowMainView();
+                break;
 
-		case ViewConstants.STUDIO_MANAGER_VIEW:
-			studioManagerView = new StudioManagerView();
-			break;
+            case ViewConstants.SYSTEM_SETTINGS_VIEW:
+                systemSettingsView = new SystemSettingsView();
+                break;
 
-		case ViewConstants.ADMIN_MANAGER_VIEW:
-			adminManagerView = new AdminManagerView();
-			break;
+            case ViewConstants.LEVEL_MANAGER_VIEW:
+                levelManagerView = new LevelManagerView();
+                break;
 
-		case ViewConstants.TEACHER_MANAGER_VIEW:
-			teacherManagerView = new TeacherManagerView();
-			break;
+            case ViewConstants.STUDIO_MANAGER_VIEW:
+                studioManagerView = new StudioManagerView();
+                break;
 
-		case ViewConstants.SCHEDULES_VIEW:
-			schedulesMainView = new SchedulesMainView();
-			break;
+            case ViewConstants.ADMIN_MANAGER_VIEW:
+                adminManagerView = new AdminManagerView();
+                break;
 
-		case ViewConstants.STUDENT_VIEW:
-			studentView = new StudentView();
-			break;
+            case ViewConstants.TEACHER_MANAGER_VIEW:
+                teacherManagerView = new TeacherManagerView();
+                break;
 
-		case ViewConstants.TEACHER_VIEW:
-			teacherPanelView = new TeacherPanelView();
-			break;
-			
-		case ViewConstants.ADMIN_ATTENDANCE_VIEW:
-			adminAttendanceView = new AdminAttendanceDataView();
-			break;
+            case ViewConstants.SCHEDULES_VIEW:
+                schedulesMainView = new SchedulesMainView();
+                break;
 
-		}
+            case ViewConstants.STUDENT_VIEW:
+                studentView = new StudentView();
+                break;
 
-	}
+            case ViewConstants.TEACHER_VIEW:
+                teacherPanelView = new TeacherPanelView();
+                break;
 
-	public boolean isViewGenerated(String name) {
+            case ViewConstants.ADMIN_ATTENDANCE_VIEW:
+                adminAttendanceView = new AdminAttendanceDataView();
+                break;
 
-		if (getViewFromName(name) == null)
-			return false;
-		return true;
+        }
 
-	}
+    }
 
-	public void LoadView(String name) {
+    public boolean isViewGenerated(String name) {
 
-		Timer loadingTimer = new Timer(LOADING_TIME_MS, e -> {
+        if (getViewFromName(name) == null)
+            return false;
+        return true;
 
-			Main.Router.showLoadingScreen();
+    }
 
-		});
+    public void LoadView(String name) {
 
-		loadingTimer.setRepeats(false);
-		
-		loadingTimer.start();
+        Timer loadingTimer = new Timer(LOADING_TIME_MS, e -> {
 
-		String viewName = name;
+            Main.Router.showLoadingScreen();
 
-		new Thread(() -> {
+        });
 
-			if (!isViewGenerated(name)) {
+        loadingTimer.setRepeats(false);
 
-				generateView(name);
-				Main.Router.setViewToPanel(name, getViewFromName(name));
+        loadingTimer.start();
 
-			}
+        String viewName = name;
 
-			javax.swing.SwingUtilities.invokeLater(() -> {
-				
-				loadingTimer.stop();
+        new Thread(() -> {
 
-				Main.Router.displayView(name);
+            if (!isViewGenerated(name)) {
 
-			});
+                generateView(name);
+                Main.Router.setViewToPanel(name, getViewFromName(name));
 
-		}).start();
+            }
 
-	}
+            javax.swing.SwingUtilities.invokeLater(() -> {
 
-	public void loadDynamicView(String name) {
+                loadingTimer.stop();
 
-		Timer loadingTimer = new Timer(LOADING_TIME_MS, e -> {
+                Main.Router.displayView(name);
 
-			Main.Router.showLoadingScreen();
+            });
 
-		});
+        }).start();
 
-		loadingTimer.setRepeats(false);
-		
-		loadingTimer.start();
+    }
 
-		String viewName = name;
+    public void loadDynamicView(String name) {
 
-		new Thread(() -> {
+        Timer loadingTimer = new Timer(LOADING_TIME_MS, e -> {
 
-			if (!isViewGenerated(name)) {
+            Main.Router.showLoadingScreen();
 
-				generateView(name);
+        });
 
-			}
+        loadingTimer.setRepeats(false);
 
-			switch (name) {
+        loadingTimer.start();
 
-			case ViewConstants.ATTENDANCE_VIEW:
-				attendanceView.Update();
-				break;
+        String viewName = name;
 
-			case ViewConstants.LOGIN_VIEW:
-				logInView.Update();
-				break;
+        new Thread(() -> {
 
-			case ViewConstants.LEVEL_MANAGER_VIEW:
-				levelManagerView.Update();
-				break;
+            if (!isViewGenerated(name)) {
 
-			case ViewConstants.STUDIO_MANAGER_VIEW:
-				studioManagerView.Update();
-				break;
+                generateView(name);
 
-			case ViewConstants.ADMIN_MANAGER_VIEW:
-				adminManagerView.Update();
-				break;
+            }
 
-			case ViewConstants.TEACHER_MANAGER_VIEW:
-				teacherManagerView.Update();
-				break;
+            switch (name) {
 
-			case ViewConstants.SHOW_DIRECTORY_VIEW:
-				showDirectoryView.Update();
-				break;
+                case ViewConstants.ATTENDANCE_VIEW:
+                    attendanceView.Update();
+                    break;
 
-			case ViewConstants.STUDENT_CREATION_VIEW:
-				studentCreationView.Update();
-				break;
+                case ViewConstants.LOGIN_VIEW:
+                    logInView.Update();
+                    break;
 
-			case ViewConstants.SCHEDULES_VIEW:
-				schedulesMainView.Update();
-				break;
+                case ViewConstants.LEVEL_MANAGER_VIEW:
+                    levelManagerView.Update();
+                    break;
 
-			}
-			
-			Main.Router.setViewToPanel(name, getViewFromName(name));
+                case ViewConstants.STUDIO_MANAGER_VIEW:
+                    studioManagerView.Update();
+                    break;
 
-			javax.swing.SwingUtilities.invokeLater(() -> {
-				
-				loadingTimer.stop();
+                case ViewConstants.ADMIN_MANAGER_VIEW:
+                    adminManagerView.Update();
+                    break;
 
-				Main.Router.displayView(name);
+                case ViewConstants.TEACHER_MANAGER_VIEW:
+                    teacherManagerView.Update();
+                    break;
 
-			});
+                case ViewConstants.SHOW_DIRECTORY_VIEW:
+                    showDirectoryView.Update();
+                    break;
 
-		}).start();
+                case ViewConstants.STUDENT_CREATION_VIEW:
+                    studentCreationView.Update();
+                    break;
 
-	}
+                case ViewConstants.SCHEDULES_VIEW:
+                    schedulesMainView.Update();
+                    break;
 
-	public void loadDynamicView(String name, String param1) {
+            }
 
-		Timer loadingTimer = new Timer(LOADING_TIME_MS, e -> {
+            Main.Router.setViewToPanel(name, getViewFromName(name));
 
-			Main.Router.showLoadingScreen();
+            javax.swing.SwingUtilities.invokeLater(() -> {
 
-		});
+                loadingTimer.stop();
 
-		loadingTimer.setRepeats(false);
-		
-		loadingTimer.start();
+                Main.Router.displayView(name);
 
-		String viewName = name;
+            });
 
-		new Thread(() -> {
+        }).start();
 
-			if (!isViewGenerated(name)) {
+    }
 
-				generateView(name);
+    public void loadDynamicView(String name, String param1) {
 
-			}
+        Timer loadingTimer = new Timer(LOADING_TIME_MS, e -> {
 
-			switch (name) {
+            Main.Router.showLoadingScreen();
 
-			case ViewConstants.ATTENDANCE_VIEW:
-				attendanceView.Update();
-				break;
+        });
 
-			case ViewConstants.COSTUME_MEASUREMENTS_VIEW:
-				costumeMeasurementsView.Update(param1);
-				break;
+        loadingTimer.setRepeats(false);
 
-			case ViewConstants.ENROLLMENT_DETAILS_VIEW:
-				enrollmentDetailsView.Update(param1);
-				break;
+        loadingTimer.start();
 
-			case ViewConstants.INDIVIDUAL_STUDENT_VIEW:
-				individualStudentView.Update(param1);
-				break;
+        String viewName = name;
 
-			case ViewConstants.LOGIN_VIEW:
-				logInView.Update();
-				break;
+        new Thread(() -> {
 
-			case ViewConstants.MEDICAL_CONDITIONS_VIEW:
-				medicalConditionsView.Update(param1);
-				break;
+            if (!isViewGenerated(name)) {
 
-			case ViewConstants.STUDENT_PROFILE_VIEW:
-				studentProfileView.Update(param1);
-				break;
+                generateView(name);
 
-			case ViewConstants.SHOW_VIEW:
-				showMainView.Update(param1);
-				break;
+            }
 
-			case ViewConstants.LEVEL_MANAGER_VIEW:
-				levelManagerView.Update();
-				break;
+            switch (name) {
 
-			case ViewConstants.STUDIO_MANAGER_VIEW:
-				studioManagerView.Update();
-				break;
+                case ViewConstants.ATTENDANCE_VIEW:
+                    attendanceView.Update();
+                    break;
 
-			case ViewConstants.ADMIN_MANAGER_VIEW:
-				adminManagerView.Update();
-				break;
+                case ViewConstants.COSTUME_MEASUREMENTS_VIEW:
+                    costumeMeasurementsView.Update(param1);
+                    break;
 
-			case ViewConstants.TEACHER_MANAGER_VIEW:
-				teacherManagerView.Update();
-				break;
+                case ViewConstants.ENROLLMENT_DETAILS_VIEW:
+                    enrollmentDetailsView.Update(param1);
+                    break;
 
-			case ViewConstants.SCHEDULES_VIEW:
-				schedulesMainView.Update();
-				break;
+                case ViewConstants.INDIVIDUAL_STUDENT_VIEW:
+                    individualStudentView.Update(param1);
+                    break;
 
-			case ViewConstants.STUDENT_VIEW:
-				studentView.Update(param1);
-				break;
-			case ViewConstants.ADMIN_ATTENDANCE_VIEW:
-				adminAttendanceView.Update(param1);
-				break;
+                case ViewConstants.LOGIN_VIEW:
+                    logInView.Update();
+                    break;
 
-			}
-			
-			Main.Router.setViewToPanel(name, getViewFromName(name));
+                case ViewConstants.MEDICAL_CONDITIONS_VIEW:
+                    medicalConditionsView.Update(param1);
+                    break;
 
-			javax.swing.SwingUtilities.invokeLater(() -> {
-				
-				loadingTimer.stop();
+                case ViewConstants.STUDENT_PROFILE_VIEW:
+                    studentProfileView.Update(param1);
+                    break;
 
-				Main.Router.displayView(name);
+                case ViewConstants.SHOW_VIEW:
+                    showMainView.Update(param1);
+                    break;
 
-			});
+                case ViewConstants.LEVEL_MANAGER_VIEW:
+                    levelManagerView.Update();
+                    break;
 
-		}).start();
+                case ViewConstants.STUDIO_MANAGER_VIEW:
+                    studioManagerView.Update();
+                    break;
 
-	}
+                case ViewConstants.ADMIN_MANAGER_VIEW:
+                    adminManagerView.Update();
+                    break;
 
-	public void loadDynamicView(String name, String param1, String param2) {
+                case ViewConstants.TEACHER_MANAGER_VIEW:
+                    teacherManagerView.Update();
+                    break;
 
-		Timer loadingTimer = new Timer(LOADING_TIME_MS, e -> {
+                case ViewConstants.SCHEDULES_VIEW:
+                    schedulesMainView.Update();
+                    break;
 
-			Main.Router.showLoadingScreen();
+                case ViewConstants.STUDENT_VIEW:
+                    studentView.Update(param1);
+                    break;
+                case ViewConstants.ADMIN_ATTENDANCE_VIEW:
+                    adminAttendanceView.Update(param1);
+                    break;
+                case ViewConstants.TEACHER_VIEW:
+                    teacherPanelView.Update(param1);
+                    break;
 
-		});
 
-		loadingTimer.setRepeats(false);
-		
-		loadingTimer.start();
+            }
 
-		String viewName = name;
+            Main.Router.setViewToPanel(name, getViewFromName(name));
 
-		new Thread(() -> {
+            javax.swing.SwingUtilities.invokeLater(() -> {
 
-			if (!isViewGenerated(name)) {
+                loadingTimer.stop();
 
-				generateView(name);
+                Main.Router.displayView(name);
 
-			}
+            });
 
-			switch (name) {
+        }).start();
 
-			case ViewConstants.SHOW_DIRECTORY_VIEW:
-				showDirectoryView.Update(Boolean.parseBoolean(param1), Boolean.parseBoolean(param2));
-				break;
+    }
 
-			}
-			
-			Main.Router.setViewToPanel(name, getViewFromName(name));
+    public void loadDynamicView(String name, String param1, String param2) {
 
-			javax.swing.SwingUtilities.invokeLater(() -> {
-				
-				loadingTimer.stop();
+        Timer loadingTimer = new Timer(LOADING_TIME_MS, e -> {
 
-				Main.Router.displayView(name);
+            Main.Router.showLoadingScreen();
 
-			});
+        });
 
-		}).start();
+        loadingTimer.setRepeats(false);
 
-	}
+        loadingTimer.start();
 
-	public void loadDynamicView(String name, String param1, String param2, String param3) {
+        String viewName = name;
 
-		Timer loadingTimer = new Timer(LOADING_TIME_MS, e -> {
+        new Thread(() -> {
 
-			Main.Router.showLoadingScreen();
+            if (!isViewGenerated(name)) {
 
-		});
+                generateView(name);
 
-		loadingTimer.setRepeats(false);
-		
-		loadingTimer.start();
+            }
 
-		String viewName = name;
+            switch (name) {
 
-		new Thread(() -> {
+                case ViewConstants.SHOW_DIRECTORY_VIEW:
+                    showDirectoryView.Update(Boolean.parseBoolean(param1), Boolean.parseBoolean(param2));
+                    break;
 
-			if (!isViewGenerated(name)) {
+            }
 
-				generateView(name);
+            Main.Router.setViewToPanel(name, getViewFromName(name));
 
-			}
+            javax.swing.SwingUtilities.invokeLater(() -> {
 
-			switch (name) {
-			
+                loadingTimer.stop();
 
-			}
-			
-			Main.Router.setViewToPanel(name, getViewFromName(name));
+                Main.Router.displayView(name);
 
-			javax.swing.SwingUtilities.invokeLater(() -> {
-				
-				loadingTimer.stop();
+            });
 
-				Main.Router.displayView(name);
+        }).start();
 
-			});
+    }
 
-		}).start();
+    public void loadDynamicView(String name, String param1, String param2, String param3) {
 
-	}
+        Timer loadingTimer = new Timer(LOADING_TIME_MS, e -> {
 
-	public void loadStudentDirectory(int page, String[] filters) {
+            Main.Router.showLoadingScreen();
 
-		Timer loadingTimer = new Timer(LOADING_TIME_MS, e -> {
+        });
 
-			Main.Router.showLoadingScreen();
+        loadingTimer.setRepeats(false);
 
-		});
-		
-		loadingTimer.start();
+        loadingTimer.start();
 
-		loadingTimer.setRepeats(false);
+        String viewName = name;
 
-		new Thread(() -> {
+        new Thread(() -> {
 
-			String viewName = ViewConstants.STUDENT_DIRECTORY_VIEW;
+            if (!isViewGenerated(name)) {
 
-			if (!isViewGenerated(viewName)) {
+                generateView(name);
 
-				generateView(viewName);
+            }
 
-			}
+            switch (name) {
 
-			studentRepertoryView.Update(page, filters);
-			
-			Main.Router.setViewToPanel(viewName, studentRepertoryView);
 
-			javax.swing.SwingUtilities.invokeLater(() -> {
-				
-				loadingTimer.stop();
+            }
 
-				Main.Router.displayView(viewName);
+            Main.Router.setViewToPanel(name, getViewFromName(name));
 
-			});
+            javax.swing.SwingUtilities.invokeLater(() -> {
 
-		}).start();
+                loadingTimer.stop();
 
-	}
+                Main.Router.displayView(name);
+
+            });
+
+        }).start();
+
+    }
+
+    public void loadStudentDirectory(int page, String[] filters) {
+
+        Timer loadingTimer = new Timer(LOADING_TIME_MS, e -> {
+
+            Main.Router.showLoadingScreen();
+
+        });
+
+        loadingTimer.start();
+
+        loadingTimer.setRepeats(false);
+
+        new Thread(() -> {
+
+            String viewName = ViewConstants.STUDENT_DIRECTORY_VIEW;
+
+            if (!isViewGenerated(viewName)) {
+
+                generateView(viewName);
+
+            }
+
+            studentRepertoryView.Update(page, filters);
+
+            Main.Router.setViewToPanel(viewName, studentRepertoryView);
+
+            javax.swing.SwingUtilities.invokeLater(() -> {
+
+                loadingTimer.stop();
+
+                Main.Router.displayView(viewName);
+
+            });
+
+        }).start();
+
+    }
 
 }

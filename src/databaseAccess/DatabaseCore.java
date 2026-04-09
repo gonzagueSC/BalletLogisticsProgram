@@ -128,6 +128,51 @@ public class DatabaseCore {
 
 	}
 
+	public static String[] returnFileExcerpt(File readFile, int startLine)
+			throws IOException, IndexOutOfBoundsException {
+
+		// startLine and endLine must be referenced from 0
+
+		// CREATE THE ARRAY BASED ON THE GIVEN EXCERPT LENGTH
+
+		ArrayList<String> fileExcerpt = new ArrayList<String>();
+
+		// OPEN A FILEREADER FOR THE GIVEN FILE
+
+		Scanner fileReader = new Scanner(readFile);
+
+		// JUMP TO THE EXCERPT AREA
+
+		DatabaseCore.skipLines(fileReader, startLine);
+
+		// LOOP THROUGH THE LENGTH OF THE EXCERPT TO GET ONLY THE EXCERPT
+
+		while (fileReader.hasNextLine()) {
+
+			String nextLine = fileReader.nextLine();
+
+			// IF THE LINE DOES NO EXIST, THROW AN EXCEPTION
+
+			if (nextLine == null) {
+
+				fileReader.close();
+				throw new IndexOutOfBoundsException(
+						"range " + startLine + " - end out of bounds for file " + readFile.getName());
+
+			}
+
+			// OTHERWISE SIMPLY ADD THE LINE
+
+			fileExcerpt.add(nextLine);
+
+		}
+
+		// RETURN THE GENERATED EXCERPT
+
+		return fileExcerpt.toArray(new String[0]);
+
+	}
+
 	public static boolean checkForLine(File readFile, String regex, String... args)
 			throws IOException, IndexOutOfBoundsException {
 
