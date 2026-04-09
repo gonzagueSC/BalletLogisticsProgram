@@ -1310,7 +1310,7 @@ public class StudentsModule {
                     StudentsModule.getStudentID(name.trim(), birthDate));
             BufferedWriter studentFixer = new BufferedWriter(new FileWriter(studentFile, true));
 
-            studentFixer.write(String.format(StudentLogFormats.CastingFormat, LocalDate.now(), Note, Teacher) + "\n");
+            studentFixer.write(String.format(StudentLogFormats.TeachersNoteFormat, LocalDate.now(), Note, Teacher) + "\n");
 
             // IMPORTANT LINE: AVOIDS A RESOURCE LEAK
 
@@ -1519,7 +1519,7 @@ public class StudentsModule {
         String[] ProfileData = databaseAccess.StudentsModule.getAllRecords(studentID, Globals.PROFILEDATA);
         String[] AdminNotes = databaseAccess.StudentsModule.getAllRecords(studentID, Globals.ADMINNOTE);
 
-        List<String> returnArray = Arrays.asList(ProfileData);
+        List<String> returnArray = new ArrayList<>(Arrays.asList(ProfileData));
         returnArray.addAll(Arrays.asList(AdminNotes));
 
         return returnArray.toArray(new String[0]);
@@ -1537,7 +1537,7 @@ public class StudentsModule {
         String[] LevelChanges = databaseAccess.StudentsModule.getAllRecords(studentID, Globals.LEVELCHANGE);
         String[] FinancialData = databaseAccess.StudentsModule.getAllRecords(studentID, Globals.FINANCIAL);
 
-        List<String> returnArray = Arrays.asList(LevelChanges);
+        List<String> returnArray = new ArrayList<>(Arrays.asList(LevelChanges));
         returnArray.addAll(Arrays.asList(FinancialData));
 
         return returnArray.toArray(new String[0]);

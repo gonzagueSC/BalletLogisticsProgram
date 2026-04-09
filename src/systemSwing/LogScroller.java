@@ -1,10 +1,16 @@
 package systemSwing;
 
 
+import control.PromptsService;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class LogScroller extends ScrollPanel{
+import static util.SwingConstants.MainGray;
+
+public class LogScroller extends ScrollPanel {
+
+    String[] logs;
 
     int height = 200;
 
@@ -16,13 +22,72 @@ public class LogScroller extends ScrollPanel{
 
     public void receiveLog(String[] logs) {
 
+        this.logs = logs;
+
         this.clearItems();
 
-        for (String logRecord: logs) {
+        for (String logRecord : logs) {
 
-            GeneralLabel log = new GeneralLabel(logRecord, 0, 0, 0, height, height/3, Color.black);
+            Button log = new Button(logRecord, (e -> {
+
+                PromptsService.DataPrompt(logRecord.split(":\\s")[1]);
+
+            }), new Dimension(0, height), 0, 0, MainGray, 0, height / 3);
             log.setHorizontalAlignment(JLabel.LEFT);
             this.addItem(log);
+
+        }
+
+    }
+
+    public void receiveLog(String[] logs, String query) {
+
+        this.logs = logs;
+
+        if (query.isBlank() || query.isEmpty()) {
+
+            receiveLog(logs);
+            return;
+
+        }
+
+        this.clearItems();
+
+        for (String logRecord : logs) {
+
+            if (logRecord.toLowerCase().contains(query.toLowerCase())) {
+
+                Button log = new Button(logRecord, (e -> {
+
+                    PromptsService.DataPrompt(logRecord.split(":\\s")[1]);
+
+                }), new Dimension(0, height), 0, 0, MainGray, 0, height / 3);
+                log.setHorizontalAlignment(JLabel.LEFT);
+                this.addItem(log);
+
+            }
+
+        }
+
+    }
+
+    public void narrowResults(String query) {
+
+        this.clearItems();
+
+        for (String logRecord : logs) {
+
+            if (logRecord.toLowerCase().contains(query.toLowerCase())) {
+
+                Button log = new Button(logRecord, (e -> {
+
+                    PromptsService.DataPrompt(logRecord.split(":\\s")[1]);
+
+                }), new Dimension(0, height), 0, 0, MainGray, 0, height / 3);
+                log.setHorizontalAlignment(JLabel.LEFT);
+                this.addItem(log);
+
+            }
 
         }
 

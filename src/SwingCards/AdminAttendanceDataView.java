@@ -1,28 +1,23 @@
 package SwingCards;
 
-import static util.SwingConstants.BACKBUTTONARCRAD;
-import static util.SwingConstants.BACKBUTTOND;
-import static util.SwingConstants.BACKBUTTONFONTSIZE;
-import static util.SwingConstants.BACKBUTTONX;
-import static util.SwingConstants.BACKBUTTONY;
-import static util.SwingConstants.MainGray;
-import static util.SwingConstants.TextColor;
+import systemSwing.*;
 
-import systemSwing.AttendanceGraph;
-import systemSwing.Button;
-import systemSwing.DataWindow;
-import systemSwing.Panel;
 import java.time.LocalDateTime;
 import java.time.temporal.*;
 
 import control.Main;
 import swingConstants.ViewConstants;
 
+import static util.SwingConstants.*;
+import static util.SwingConstants.LOGINSIGNUPLABELFONTSIZE;
+import static util.SwingConstants.TITLELABELWIDTH;
+
 public class AdminAttendanceDataView extends Panel {
 
 	private String currentDay;
 	private AttendanceGraph attendanceGraph;
 	private DataWindow statsWindow;
+	private TitleLabel Student;
 
 	public AdminAttendanceDataView() {
 
@@ -37,9 +32,15 @@ public class AdminAttendanceDataView extends Panel {
 		
 		this.add(MainMenu);
 
+		Student = new TitleLabel("", TITLELABELX, BACKBUTTONY, TITLELABELWIDTH, (int) BACKBUTTOND.getHeight(), BUTTONPANELFONTSIZE * 3, TextColor);
+
+		this.add(Student);
+
 	}
 
 	public void Update(String ID) {
+
+		Student.setText(databaseAccess.StudentsModule.getStudentDisplayByID(ID));
 
 		if (attendanceGraph != null) {
 
@@ -76,6 +77,9 @@ public class AdminAttendanceDataView extends Panel {
 
 		}
 
+		this.revalidate();
+		this.repaint();
+
 	}
 
 	public void UpdateData() {
@@ -98,6 +102,9 @@ public class AdminAttendanceDataView extends Panel {
 			this.add(statsWindow);
 
 		}
+
+		this.revalidate();
+		this.repaint();
 
 	}
 

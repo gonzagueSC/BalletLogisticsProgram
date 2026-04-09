@@ -21,8 +21,6 @@ public class MultipleSelectStaticCalendar extends WeekCalendarPanel {
 		if (!selectedDays.contains(Date)) {
 			selectedDays.add(Date);
 		} else if (selectedDays.contains(Date)) selectedDays.remove(selectedDays.indexOf(Date));
-		
-		//System.out.println(Date);
 
 		WeekDay[] weekButtons = this.getWeek();
 

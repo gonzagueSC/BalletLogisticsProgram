@@ -11,8 +11,6 @@ public class ConflictChecker {
 		String teacherBooked = isTeacherBooked(date, startTime, endTime, teacher);
 		String areRolesBooked = areRolesBooked(date, startTime, endTime, roles);
 
-		System.out.println(studioBooked + "   " + teacherBooked);
-
 		if (!studioBooked.isBlank())
 			throw new Exception("Studio is already Booked with " + studioBooked);
 
@@ -116,8 +114,6 @@ public class ConflictChecker {
 		String[] rehearsalsOfDay = SchedulesModule.getScheduleByDate(date);
 
 		for (String rehearsal : rehearsalsOfDay) {
-
-			System.out.println(rehearsal.split(", ")[1] + "     " + date);
 
 			if (rehearsal.split(", ")[1].equals(date) && rehearsal.split(", ")[4].equals(studio)) {
 
