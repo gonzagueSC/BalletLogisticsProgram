@@ -1,11 +1,12 @@
 package systemSwing;
 
 
+import javax.swing.*;
 import java.awt.*;
 
 public class LogScroller extends ScrollPanel{
 
-    int height = 50;
+    int height = 200;
 
     public void setLogHeight(int logHeight) {
 
@@ -15,9 +16,12 @@ public class LogScroller extends ScrollPanel{
 
     public void receiveLog(String[] logs) {
 
+        this.clearItems();
+
         for (String logRecord: logs) {
 
-            GeneralLabel log = new GeneralLabel(logRecord, 0, 0, this.getWidth(), height, height/15, Color.black);
+            GeneralLabel log = new GeneralLabel(logRecord, 0, 0, 0, height, height/3, Color.black);
+            log.setHorizontalAlignment(JLabel.LEFT);
             this.addItem(log);
 
         }

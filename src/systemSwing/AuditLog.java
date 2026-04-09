@@ -1,7 +1,6 @@
 package systemSwing;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.util.Arrays;
 
 import javax.swing.JPanel;
@@ -42,7 +41,11 @@ public class AuditLog extends Panel {
 
         this.setBounds(this.getBounds().x, this.getBounds().y, X, Y);
 
-        auditLog.setLogHeight(this.getHeight() / 30);
+        this.auditLog.setSize(new Dimension(X-40, Y-40));
+
+        this.auditLog.setLocation(20, 20);
+
+        auditLog.setLogHeight(this.getHeight() / 10);
 
     }
 
@@ -60,8 +63,6 @@ public class AuditLog extends Panel {
 
         try {
             studentLogs = databaseAccess.StudentsModule.getAllRecords(this.ID);
-
-            System.out.println(Arrays.toString(studentLogs));
         } catch (Exception e) {
             e.printStackTrace();
         }
