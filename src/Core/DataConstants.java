@@ -9,5 +9,10 @@ public class DataConstants {
 	
 	public static final int BEFORE = 1;
 	public static final int AFTER = 2;
+	
+	public static final String[] Months = { "January", "February", "March", "April", "May", "June", "July", "August",
+		   "September", "October", "November", "December" };
+	
+	public static final String nullValue = null;
 
 }

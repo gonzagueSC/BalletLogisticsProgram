@@ -12,15 +12,14 @@ public abstract class DBEntity {
 	private final File file;
 	private String dataType;
 	
-	private FileChecker fileChecker;
-	private String[] lines;
-	private Map<String, String> entityData;
+	protected FileChecker fileChecker;
+	protected String[] lines;
+	protected Map<String, String> entityData;
 	
 	public DBEntity ( File file ) throws IOException, IllegalClassFormatException {
 		
 		this.file = file;
 		this.database = new DB(this.file);
-		collectData();
 		
 		initializeComponents();
 		
@@ -40,18 +39,9 @@ public abstract class DBEntity {
 		
 		this.dataType = dataType;
 		
-		if (dataType.equals(JSON_TYPE)) {
-			
-			this.entityData = database.interpretJSON();
-			
-		} else if (dataType.equals(TEXT_TYPE)) {
-			
-			this.fileChecker = new FileChecker(database);
-			
-			this.lines = this.fileChecker.getLines();
-			fileChecker.updateLines();
-			
-		}
+		database.setFileType(dataType);
+		
+		collectData();
 		
 	}
 	
@@ -126,7 +116,7 @@ public abstract class DBEntity {
 		
 	}
 	
-	protected abstract void initializeComponents ();
+	protected abstract void initializeComponents () throws IllegalClassFormatException, IOException;
 	
 	protected void save () throws IOException {
 		

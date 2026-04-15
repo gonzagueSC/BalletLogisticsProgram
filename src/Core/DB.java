@@ -15,24 +15,48 @@ public class DB {
 	private final File file;
 	private BufferedReader fileReader;
 	private BufferedWriter fileWriter;
-	private final String fileType;
+	private String fileType;
 	
 	public DB ( File file ) throws IOException {
 		
 		this.file = file;
-		FileReader baseDataReader = new FileReader(file);
-		fileReader = new BufferedReader(baseDataReader);
 		
-		try {
-			fileType = (fileReader.readLine().substring(5));
+		if (fileExists(this.file)) {
+			FileReader baseDataReader = new FileReader(file);
+			fileReader = new BufferedReader(baseDataReader);
 			
-		} finally {fileReader.close();}
+			try {
+				
+				if (fileReader.readAllAsString().isBlank()) {
+					
+					fileType = "TEMP";
+					
+				} else {
+					
+					fileType = (fileReader.readLine().substring(5));
+					
+				}
+				
+			} finally {fileReader.close();}
+		}
 		
 	}
 	
 	public File getFile () {
 		
 		return file;
+		
+	}
+	
+	public void setFileType ( String dataType ) throws IOException {
+		
+		fileType = dataType;
+		
+		if (!fileExists(this.file)) {
+			
+			fileStartup(file, dataType);
+			
+		}
 		
 	}
 	
@@ -226,12 +250,6 @@ public class DB {
 			
 		}
 		
-	}
-	
-	public static void moveFile(File file, String newPath) {
-	
-	
-	
 	}
 	
 }
