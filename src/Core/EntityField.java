@@ -4,15 +4,13 @@ public class EntityField {
 	
 	private final String name;
 	private final boolean mutable;
-	private final Object dataType;
-	private final Class<?> fieldType;
+	private final Class<?> dataType;
 	
-	public <T> EntityField(String name, boolean mutable, T dataType) {
+	public <T> EntityField(String name, boolean mutable, Class<T> dataType) {
 	
 		this.name = name;
 		this.mutable = mutable;
 		this.dataType = dataType;
-		this.fieldType = this.dataType.getClass();
 	
 	}
 	
@@ -30,7 +28,7 @@ public class EntityField {
 	
 	public Class<?> getFieldType() {
 		
-		return this.fieldType;
+		return this.dataType;
 		
 	}
 	

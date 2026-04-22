@@ -9,7 +9,7 @@ import static Core.DataConstants.*;
 public abstract class DBEntity {
 	
 	private final DB database;
-	private final File file;
+	protected final File file;
 	private String dataType;
 	
 	protected FileChecker fileChecker;
@@ -111,6 +111,21 @@ public abstract class DBEntity {
 		} else {
 			
 			throw new IllegalClassFormatException("Cannot run editFileLine for a non RAW object");
+			
+		}
+		
+	}
+	
+	protected void removeLine(String line) throws IOException, IllegalClassFormatException {
+		
+		if (dataType.equals(TEXT_TYPE)) {
+			
+			fileChecker.removeLine(line);
+			fileChecker.updateLines();
+			
+		} else {
+			
+			throw new IllegalClassFormatException("Cannot run removeLine for a non RAW object");
 			
 		}
 		

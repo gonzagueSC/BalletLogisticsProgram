@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
 import java.lang.instrument.IllegalClassFormatException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static Core.DataConstants.*;
@@ -27,11 +29,13 @@ public class DB {
 			
 			try {
 				
-				if (fileReader.readAllAsString().isBlank()) {
+				if (fileReader.readAllAsString().isBlank() || fileReader.readAllAsString().isEmpty()) {
 					
 					fileType = "TEMP";
 					
 				} else {
+					
+					fileReader = new BufferedReader(baseDataReader);
 					
 					fileType = (fileReader.readLine().substring(5));
 					
@@ -101,19 +105,19 @@ public class DB {
 			
 			if (fileType.equals(JSON_TYPE)) {
 				
-				result = fileReader.readAllAsString();
+				result = decodeFromFile(fileReader.readAllAsString());
 				
 				fileReader.close();
 				
 			} else if (fileType.equals(TEXT_TYPE)) {
 				
-				result = fileReader.readAllLines();
+				result = fileReader.readAllLines().toArray(new String[0]);
 				
 				fileReader.close();
 				
 			} else {
 				
-				throw new IllegalArgumentException("Unknown File Type Presented: " + fileType + ". Error " +
+				throw new AppWarning("Unknown File Type Presented: " + fileType + ". Error " +
 					   "Originated in DB");
 				
 			}
@@ -132,9 +136,17 @@ public class DB {
 			
 		} else {
 			
+			Object lines = this.getLines();
+			
+			if (lines.toString().isEmpty()) {
+				
+				lines = new String("{}");
+				
+			}
+			
 			ObjectMapper mapper = new ObjectMapper();
 			
-			return mapper.readValue((String) this.getLines(), new TypeReference<Map<String, String>>() {});
+			return mapper.readValue((String) lines, new TypeReference<Map<String, String>>() {});
 			
 		}
 		
@@ -217,6 +229,16 @@ public class DB {
 			   .replace("\"", "\\\"");  // Encode double quotes
 	}
 	
+	public static String decodeFromFile ( String input ) {
+		if (input == null)
+			return null;
+		return input.replace("\\\\", "\\")  // Must escape backslashes first!
+			   .replace("\\n", "\n")    // Encode newlines
+			   .replace("\\r", "\r")    // Encode carriage returns
+			   .replace("\\t", "\t")    // Encode tabs
+			   .replace("\\\"", "\"");  // Encode double quotes
+	}
+	
 	public static File retrieveFile ( String path ) {
 		
 		return new File(path);
@@ -231,7 +253,9 @@ public class DB {
 	
 	public static void createFile ( File file, String dataType ) throws IOException {
 		
-		boolean fileExists = !file.createNewFile();
+		Path path = Paths.get(file.getPath());
+		
+		boolean fileExists = !(new File(path.getParent().toString())).mkdirs() && !file.createNewFile();
 		
 		if (!fileExists) {
 			FileWriter fileWriter = new FileWriter(file);

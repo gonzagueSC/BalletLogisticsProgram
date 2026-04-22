@@ -4,6 +4,7 @@ import java.awt.CardLayout;
 
 import javax.swing.JPanel;
 
+import Core.EntityMapper;
 import databaseAccess.*;
 import systemSwing.*;
 import swingConstants.*;
@@ -30,6 +31,8 @@ public class Main {
 		deckPanel.setBounds(0, 0, CoreVariables.SCREENWIDTH, CoreVariables.SCREENHEIGHT);
 
 		DatabaseCore.Update();
+		
+		EntityMapper.getInstance();
 
 		viewFactory.setUp();
 

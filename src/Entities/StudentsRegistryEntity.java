@@ -39,19 +39,29 @@ public class StudentsRegistryEntity extends RegistryEntity {
 		
 	}
 	
-	public synchronized void addStudent ( Map<EntityField, String> entityValues ) throws IllegalClassFormatException, IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+	public synchronized void addStudent ( Map<EntityField, String> entityValues ) throws IllegalClassFormatException, IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, CloneNotSupportedException {
 		
 		if (!(entityValues.containsKey(StudentEntity.firstName) && entityValues.containsKey(StudentEntity.lastName) && entityValues.containsKey(StudentEntity.dateOfBirth)))
-			throw new MissingFormatArgumentException("Missing crucial data to create Student");
+			throw new AppWarning("Missing crucial data to create Student");
+		
+		String firstName = entityValues.get(StudentEntity.firstName);
+		String lastName = entityValues.get(StudentEntity.lastName);
+		String dateOfBirth = entityValues.get(StudentEntity.dateOfBirth);
+		
+		if (studentAlreadyExists(firstName, lastName, dateOfBirth))
+			throw new AppWarning("Student Already Exists");
 		
 		
 		String nextID = EntityMapper.getInstance().getEntity(ConfigEntity.class).returnNextStudentID();
 		String studentDisplay =
-			   entityValues.get(StudentEntity.firstName) + " " + entityValues.get(StudentEntity.lastName) + entityValues.get(StudentEntity.dateOfBirth);
+			   firstName + " " +lastName + dateOfBirth;
 		studentsMap().put(studentDisplay, nextID);
 		this.save();
 		
 		this.createEntity(nextID);
+		
+		StudentEntity currentStudent = this.getStudent(nextID);
+		currentStudent.saveFields(entityValues);
 		
 	}
 	
@@ -101,6 +111,12 @@ public class StudentsRegistryEntity extends RegistryEntity {
 		studentsMap().put(newDisplay, ID);
 		save();
 	
+	}
+	
+	public boolean studentAlreadyExists(String firstName, String lastName, String birthDate) {
+		
+		return this.studentsMap().containsKey(firstName + " " + lastName + " " + birthDate);
+		
 	}
 	
 	@Override

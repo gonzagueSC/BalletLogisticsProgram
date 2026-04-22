@@ -193,6 +193,14 @@ public class FileChecker {
 	
 	}
 	
+	public void removeLine(String line) throws IOException {
+		
+		ArrayList<String> newLines = new ArrayList<String>(List.of(lines));
+		newLines.remove(line);
+		currentFile.writeRAW(newLines.toArray(new String[0]));
+		
+	}
+	
 	public static String[] getLines ( File file ) throws IOException {
 		
 		@SuppressWarnings("unchecked") String[] lines =

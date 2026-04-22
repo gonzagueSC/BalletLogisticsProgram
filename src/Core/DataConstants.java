@@ -1,5 +1,7 @@
 package Core;
 
+import java.time.format.DateTimeFormatter;
+
 public class DataConstants {
 	
 	public static final String IDENTIFIER = "TYPE:";
@@ -14,5 +16,7 @@ public class DataConstants {
 		   "September", "October", "November", "December" };
 	
 	public static final String nullValue = null;
+	
+	public static final DateTimeFormatter DateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
 }

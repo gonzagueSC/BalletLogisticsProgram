@@ -12,6 +12,8 @@ abstract public class JSONObjectEntity extends DBEntity {
 	
 	private static final String FileType = JSON_TYPE;
 	
+	protected Map<EntityField, String> objectValues = new HashMap<EntityField, String>();
+	
 	public JSONObjectEntity ( String filePath, File folder ) throws IOException, IllegalClassFormatException {
 		
 		File objectFile = new File(folder, filePath);
@@ -19,6 +21,7 @@ abstract public class JSONObjectEntity extends DBEntity {
 		DB.fileStartup(objectFile, FileType);
 		
 		super(objectFile);
+		
 		
 	}
 	
@@ -30,6 +33,18 @@ abstract public class JSONObjectEntity extends DBEntity {
 		
 		setUpFile();
 		
+	}
+	
+	public Map<EntityField, String> getObjectValues() {
+	
+		for (EntityField field: ENTITY_FIELDS) {
+			
+			objectValues.put(field, this.entityData.get(field.getName()));
+			
+		}
+		
+		return  objectValues;
+	
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -122,12 +137,14 @@ abstract public class JSONObjectEntity extends DBEntity {
 			
 		}
 		
+		this.save();
+		
 	}
 	
-	public void saveField ( EntityField field, String valueToSave ) {
+	public void saveField ( EntityField field, String valueToSave ) throws IOException {
 		
 		if (field == null)
-			throw new IllegalArgumentException("Cannot save an null field");
+			throw new IllegalArgumentException("Cannot save a null field");
 		if (!field.isMutable() && getFieldValue(field) != null)
 			throw new IllegalArgumentException("Cannot save over " + "and immutable value " + "if " + "previously " +
 				   "assigned a value");
@@ -141,6 +158,8 @@ abstract public class JSONObjectEntity extends DBEntity {
 			throw new IllegalArgumentException("Argument was not of the same type as the field");
 		
 		}
+		
+		this.save();
 		
 	}
 	
