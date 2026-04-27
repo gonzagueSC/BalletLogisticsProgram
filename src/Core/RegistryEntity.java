@@ -1,7 +1,5 @@
 package Core;
 
-import Entities.StudentEntity;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.instrument.IllegalClassFormatException;
@@ -16,7 +14,7 @@ public abstract class RegistryEntity extends DBEntity {
 	
 	private final Class<? extends DBEntity> ObjectType;
 	
-	Map<String, DBEntity> loadedEntitiesList = new HashMap<String, DBEntity>();
+	Map<String, DBEntity> loadedEntitiesList = new HashMap<>();
 	
 	public <T extends DBEntity> RegistryEntity ( File registry, Class<T> type ) throws IOException,
 		   IllegalClassFormatException {
@@ -28,10 +26,10 @@ public abstract class RegistryEntity extends DBEntity {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public synchronized <T extends DBEntity> T getEntity ( String filePath ) throws IllegalClassFormatException,
-		   IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+	public synchronized <T extends DBEntity> T getEntity ( String filePath ) throws InvocationTargetException,
+		   NoSuchMethodException, InstantiationException, IllegalAccessException {
 		
-		if (!entityIsLoaded(filePath)) {
+		if ( !entityIsLoaded(filePath) ) {
 			
 			createEntity(filePath);
 			
@@ -41,14 +39,57 @@ public abstract class RegistryEntity extends DBEntity {
 		
 	}
 	
+	public String getNextID(String format) {
+		
+		if (this.entityData.isEmpty()) {
+			
+			return String.format(format, 1);
+			
+		} else {
+			
+			HashMap<Integer, String> IDs = new HashMap<>();
+			
+			int maxID = 0;
+			
+			for (String cast : this.entityData.keySet()) {
+				
+				int ID = Integer.parseInt(this.entityData.get(cast).substring(5));
+				
+				maxID = Math.max(maxID, ID);
+				
+				IDs.put(ID, cast);
+				
+			}
+			
+			if (maxID > IDs.size()) {
+				
+				for (int i = 1; i <= IDs.size(); i++) {
+					
+					if (!IDs.containsKey(i)) {
+						
+						return String.format(format, i);
+						
+					}
+					
+				}
+				
+			}
+			
+			return String.format(format, maxID + 1);
+			
+		}
+	
+	}
+	
+	@SuppressWarnings("All")
 	public boolean entityIsLoaded ( String filePath ) {
 		
 		return (loadedEntitiesList.containsKey(filePath));
 		
 	}
 	
-	public void createEntity ( String filePath ) throws IllegalClassFormatException, IOException,
-		   NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+	public void createEntity ( String filePath ) throws NoSuchMethodException, InvocationTargetException,
+		   InstantiationException, IllegalAccessException {
 		
 		DBEntity newLoad = this.ObjectType.getConstructor(String.class).newInstance(filePath);
 		
@@ -58,9 +99,9 @@ public abstract class RegistryEntity extends DBEntity {
 	
 	
 	@SuppressWarnings("unchecked")
-	public synchronized <T extends DBEntity> T getEntity ( String filePath, boolean buildFromPath ) throws IllegalClassFormatException, IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+	public synchronized <T extends DBEntity> T getEntity ( String filePath, boolean buildFromPath ) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 		
-		if (!entityIsLoaded(filePath)) {
+		if ( !entityIsLoaded(filePath) && buildFromPath ) {
 			
 			createEntity(filePath, new File(file.toPath().getParent().toString()));
 			
@@ -70,7 +111,8 @@ public abstract class RegistryEntity extends DBEntity {
 		
 	}
 	
-	public synchronized void removeEntity(String filePath) throws IOException {
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+	public synchronized void removeEntity ( String filePath ) throws IOException {
 		
 		DBEntity Entity = this.loadedEntitiesList.get(filePath);
 		
@@ -82,19 +124,25 @@ public abstract class RegistryEntity extends DBEntity {
 		
 	}
 	
-	public void createEntity ( String filePath, File folder) throws IllegalClassFormatException, IOException,
-		   NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+	public void createEntity ( String filePath, File folder ) throws NoSuchMethodException, InvocationTargetException
+		   , InstantiationException, IllegalAccessException {
 		
-		DBEntity newLoad = this.ObjectType.getConstructor(String.class).newInstance(filePath, folder);
+		DBEntity newLoad = this.ObjectType.getConstructor(String.class, File.class).newInstance(filePath, folder);
 		
 		loadedEntitiesList.put(filePath, newLoad);
 		
 	}
 	
-	public Map<String, String> getData() {
+	public Map<String, String> getData () {
 		
 		return this.entityData;
 		
+	}
+	
+	@Override
+	protected void initializeComponents () throws IllegalClassFormatException, IOException {
+		
+		setDataType(FileType);
 	}
 	
 }
