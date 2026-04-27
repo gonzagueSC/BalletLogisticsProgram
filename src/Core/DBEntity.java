@@ -25,6 +25,7 @@ public abstract class DBEntity {
 		
 	}
 	
+	@SuppressWarnings("unused")
 	public DBEntity ( DB database ) throws IOException, IllegalClassFormatException {
 		
 		this.database = database;
@@ -95,12 +96,14 @@ public abstract class DBEntity {
 		
 	}
 	
+	@SuppressWarnings("unused")
 	protected void editFile ( String key, String newValue ) throws IllegalClassFormatException, IOException {
 		
 		this.addToFile(key, newValue);
 		
 	}
 	
+	@SuppressWarnings("unused")
 	protected void editFileLine ( String oldLine, String newLine ) throws IOException, IllegalClassFormatException {
 		
 		if (dataType.equals(TEXT_TYPE)) {
@@ -150,6 +153,13 @@ public abstract class DBEntity {
 				   "Originated in DBEntity");
 			
 		}
+		
+	}
+	
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+	public void killFile() {
+		
+		file.delete();
 		
 	}
 	

@@ -15,8 +15,9 @@ public class PerformancesRegistryEntity extends RegistryEntity {
 	
 	public static final String FileType = JSON_TYPE;
 	public static final String RegistryName = "Performances";
+	public static final String format = "PERFORMANCE-%04d";
 	
-	public PerformancesRegistryEntity(File Production) throws IllegalClassFormatException, IOException {
+	public PerformancesRegistryEntity ( File Production ) throws IllegalClassFormatException, IOException {
 		
 		File Registry = new File(Production, RegistryName);
 		
@@ -24,37 +25,109 @@ public class PerformancesRegistryEntity extends RegistryEntity {
 		
 	}
 	
-	public String getPerformanceID(String performanceName) {
-	
+	public String getPerformanceID ( String performanceName ) {
+		
 		return this.entityData.get(performanceName);
-	
+		
 	}
 	
-	public void addPerformance(String performanceName) throws IOException {
+	public void addPerformance ( String performanceName ) throws IOException {
 		
-		this.entityData.put(performanceName, getPerformanceID(performanceName));
+		this.entityData.put(performanceName, getNextPerformanceID());
 		this.save();
 		
 	}
 	
-	public String getNextPerformanceID() {
+	public String getNextPerformanceID () {
 		
-		return String.format("PERFORMANCE-%04d", this.entityData.size() + 1);
+		return this.getNextID(format);
 		
 	}
 	
-	public PerformanceEntity getPerformance(String performanceID) throws IllegalClassFormatException, IOException,
-		   InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+	public PerformanceEntity getPerformance ( String performanceName ) throws IllegalClassFormatException,
+		   IOException, InvocationTargetException, NoSuchMethodException, InstantiationException,
+		   IllegalAccessException {
 		
-		return this.getEntity(performanceID, true);
-	
+		if ( !this.entityData.containsKey(performanceName) ) {
+			throw new IllegalArgumentException("Performance not found");
+		}
+		
+		return this.getPerformance(this.getPerformanceID(performanceName), true);
+		
 	}
 	
-	public List<String> getAllPerformances() {
+	public PerformanceEntity getPerformance ( String performanceID, boolean withID ) throws IllegalClassFormatException, IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 		
-		List<String> performances = new ArrayList<String>(this.entityData.keySet());
+		if ( withID ) {
+			
+			return this.getEntity(performanceID, true);
+			
+		}
 		
-		return performances;
+		return this.getPerformance(performanceID);
+		
+	}
+	
+	public List<String> getAllPerformances () {
+		
+		return new ArrayList<>(this.entityData.keySet());
+		
+	}
+	
+	public void changeRole ( String oldRole, String newRole ) throws IOException, InvocationTargetException,
+		   NoSuchMethodException, InstantiationException, IllegalAccessException {
+		
+		List<String> performances = getAllPerformances();
+		
+		for ( String performance : performances ) {
+			
+			PerformanceEntity performanceEntity = this.getEntity(performance, true);
+			performanceEntity.editRole(oldRole, newRole);
+			
+		}
+		
+	}
+	
+	public void removePerformance ( String performanceName ) throws IOException, InvocationTargetException,
+		   NoSuchMethodException, InstantiationException, IllegalAccessException {
+		
+		if ( !this.entityData.containsKey(performanceName) )
+			throw new IllegalArgumentException("Performance does not exist in registry");
+		
+		PerformanceEntity performance = this.getEntity(this.getPerformanceID(performanceName), true);
+		
+		performance.killFile();
+		
+		this.entityData.remove(performanceName);
+		this.save();
+		
+	}
+	
+	public void removeRole ( String role ) throws IOException, InvocationTargetException, NoSuchMethodException,
+		   InstantiationException, IllegalAccessException {
+		
+		List<String> performances = getAllPerformances();
+		
+		for ( String performance : performances ) {
+			
+			PerformanceEntity performanceEntity = this.getEntity(this.getPerformanceID(performance), true);
+			performanceEntity.removeRole(role);
+			
+		}
+		
+	}
+	
+	public void removeCast ( String castName ) throws IOException, InvocationTargetException, NoSuchMethodException,
+		   InstantiationException, IllegalAccessException {
+		
+		List<String> performances = getAllPerformances();
+		
+		for ( String performance : performances ) {
+			
+			PerformanceEntity performanceEntity = this.getEntity(this.getPerformanceID(performance), true);
+			performanceEntity.removeCast(castName);
+			
+		}
 		
 	}
 	
@@ -62,7 +135,7 @@ public class PerformancesRegistryEntity extends RegistryEntity {
 	protected void initializeComponents () throws IllegalClassFormatException, IOException {
 		
 		setDataType(FileType);
-	
+		
 	}
 	
 }

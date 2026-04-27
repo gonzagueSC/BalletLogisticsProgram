@@ -34,10 +34,10 @@ public class RolesEntity extends DBEntity {
 		
 		this.removeLine(roleName);
 		this.save();
-		//TODO Connect to Remove the roles from the Casts
 		
 	}
 	
+	@SuppressWarnings("unused")
 	public boolean roleExists (String roleName) throws IOException {
 		
 		return this.fileChecker.lineExists(roleName);
@@ -48,6 +48,12 @@ public class RolesEntity extends DBEntity {
 		
 		return List.of(this.fileChecker.getLines());
 		
+	}
+	
+	public void changeRole(String oldRole, String newRole) throws IOException {
+	
+		this.fileChecker.editLine(oldRole, newRole);
+	
 	}
 	
 	@Override

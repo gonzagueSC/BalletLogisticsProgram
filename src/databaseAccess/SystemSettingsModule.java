@@ -80,6 +80,7 @@ public class SystemSettingsModule {
 	 *             "Admins").
 	 * @param name The name of the detail to remove.
 	 */
+	@SuppressWarnings("All")
 	public static void removeSystemDetail(String type, String name) {
 
 		// select the correct settings file based on type
@@ -100,7 +101,7 @@ public class SystemSettingsModule {
 			String fullNamesFile = "";
 
 			while (FileReader.hasNext()) {
-
+				
 				fullNamesFile += FileReader.nextLine() + "\n";
 
 			}
@@ -301,8 +302,7 @@ public class SystemSettingsModule {
 			return LevelData;
 
 		} catch (Exception e) {
-
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 
 		}

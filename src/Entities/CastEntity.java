@@ -5,11 +5,8 @@ import Core.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.instrument.IllegalClassFormatException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static Core.DataConstants.*;
 
@@ -32,22 +29,27 @@ public class CastEntity extends DBEntity {
 		
 	}
 	
+	@SuppressWarnings("unused")
 	public void castStudent(String studentID, String role) throws IOException {
-		
-		//TODO make sure that the role exists
- 	
+
 		if (!CastingMap().containsKey(role)) {
-			CastingMap().put(role, Arrays.deepToString(new String[]{studentID}));
-			this.save();
-			return;
+			throw new AppWarning("Tried to cast a student to a non-existing role");
 		}
-		
+
+
+
 		String currentCasting = CastingMap().get(role);
+
+		if (currentCasting == null) {
+
+			currentCasting = "";
+
+		}
 		
 		if (currentCasting.contains(studentID))
 			throw new AppError( new AppWarning("Tried to cast the same student twice"));
 		
-		currentCasting += ", " + studentID;
+		currentCasting += ((!currentCasting.isBlank())?", ":"") + studentID;
 	
 		CastingMap().put(role, currentCasting);
 		
@@ -55,6 +57,7 @@ public class CastEntity extends DBEntity {
 	
 	}
 	
+	@SuppressWarnings("unused")
 	public void removeStudentFromCast(String studentID, String role) throws IOException {
 		
 		String currentCasting = CastingMap().get(role);
@@ -73,18 +76,56 @@ public class CastEntity extends DBEntity {
 	}
 	
 	public void removeRole(String roleName) throws IOException {
-	
-		if (CastingMap().containsKey(roleName))
-			CastingMap().remove(roleName);
+		
+		CastingMap().remove(roleName);
 		
 		save();
 	
 	}
 	
+	@SuppressWarnings("unused")
 	public Map<String, String> getAllRoles() {
 		
 		return this.CastingMap();
 		
+	}
+
+	public void updateRoles( List<String> roles) throws IOException {
+
+		for (String role : roles) {
+
+			if (!CastingMap().containsKey(role))
+				CastingMap().put(role, null);
+
+		}
+
+		if (roles.size() != CastingMap().size()) {
+
+			for (String key: CastingMap().keySet()) {
+
+				if (!roles.contains(key))
+					removeRole(key);
+
+			}
+
+		}
+
+		this.save();
+
+	}
+	
+	public void changeRoleName(String oldRole, String newRole) throws IOException {
+	
+		if (CastingMap().containsKey(oldRole)) {
+			
+			CastingMap().put(newRole, CastingMap().get(oldRole));
+			
+			CastingMap().remove(oldRole);
+			
+		}
+		
+		this.save();
+	
 	}
 	
 	@Override
