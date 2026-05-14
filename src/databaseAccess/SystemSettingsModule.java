@@ -73,7 +73,7 @@ public class SystemSettingsModule {
 	}
 
 	/**
-	 * Removes a system-level detail (Teacher, Studio, Level, or Admin) from its
+	 * Removes a system-LEVEL detail (Teacher, Studio, Level, or Admin) from its
 	 * respective settings file.
 	 *
 	 * @param type The type of detail ("Teachers", "Studios", "Levels", or
@@ -144,7 +144,7 @@ public class SystemSettingsModule {
 	}
 
 	/**
-	 * Adds a system-level detail (Teacher, Studio, Level, or Admin) to its
+	 * Adds a system-LEVEL detail (Teacher, Studio, Level, or Admin) to its
 	 * respective settings file.
 	 *
 	 * @param type The type of detail ("Teachers", "Studios", "Levels", or

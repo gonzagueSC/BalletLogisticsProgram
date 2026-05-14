@@ -4,7 +4,7 @@ import java.awt.CardLayout;
 
 import javax.swing.JPanel;
 
-import Core.EntityMapper;
+import Core.Databases.EntityMapper;
 import databaseAccess.*;
 import systemSwing.*;
 import swingConstants.*;

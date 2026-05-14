@@ -1,13 +1,8 @@
 package databaseAccess;
 
 import java.io.*;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.Month;
-import java.time.YearMonth;
-import java.time.temporal.TemporalAdjusters;
 
-import util.DataPoint;
 import util.Globals;
 
 import java.util.*;
@@ -23,7 +18,7 @@ public class StudentsModule {
      * Adds a student to the system with as 8 data values: First Name, Last Name,
      * Level, Email, Phone Number, Medical Conditions, Date Of Birth, Gender
      *
-     * @param strings
+     * @param strings fields
      */
 
     public static void addStudent(String... strings) {
@@ -922,11 +917,11 @@ public class StudentsModule {
     }
 
     /**
-     * Logs a change to a student's gender in their file if the value has changed.
+     * Logs a change to a student's GENDER in their file if the value has changed.
      *
      * @param name      The student's full name.
      * @param birthDate The student's birth date.
-     * @param newGender The new gender value.
+     * @param newGender The new GENDER value.
      */
     public static void changeStudentGender(String name, String birthDate, String newGender) {
 
@@ -958,11 +953,11 @@ public class StudentsModule {
     }
 
     /**
-     * Logs a change to a student's address in their file if the value has changed.
+     * Logs a change to a student's ADDRESS in their file if the value has changed.
      *
      * @param name       The student's full name.
      * @param birthDate  The student's birth date.
-     * @param newAddress The new address value.
+     * @param newAddress The new ADDRESS value.
      */
     public static void changeStudentAddress(String name, String birthDate, String newAddress) {
 
@@ -1200,11 +1195,11 @@ public class StudentsModule {
     }
 
     /**
-     * Logs a change to a student's level in their file if the value has changed.
+     * Logs a change to a student's LEVEL in their file if the value has changed.
      *
      * @param name      The student's full name.
      * @param birthDate The student's birth date.
-     * @param newLevel  The new level value.
+     * @param newLevel  The new LEVEL value.
      */
     public static void changeStudentLevel(String name, String birthDate, String newLevel) {
 

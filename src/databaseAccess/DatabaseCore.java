@@ -4,11 +4,11 @@ import java.io.*;
 import java.time.*;
 import java.time.format.*;
 import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import Core.Utilities.Chronos;
 import util.Globals;
 
 public class DatabaseCore {
@@ -772,7 +772,7 @@ public class DatabaseCore {
 
 	/**
 	 * Generates a simple, custom hash of a string. Note: This is NOT
-	 * cryptographically secure, simply for low level security. You can't peek into
+	 * cryptographically secure, simply for low LEVEL security. You can't peek into
 	 * the files and find a password
 	 *
 	 * @param s The string to hash.
@@ -971,26 +971,8 @@ public class DatabaseCore {
 	}
 
 	public static int getUnitsBetweenTimes(String startTime, String endTime, String units) throws Exception {
-
-		if (!units.equals(Globals.MINUTES) && !units.equals(Globals.HOURS) && !units.equals(Globals.DAYS)) {
-
-			return -1;
-
-		}
-
-		LocalDateTime start = DatabaseCore.isValidDateTime(startTime);
-		LocalDateTime end = DatabaseCore.isValidDateTime(endTime);
-
-		long time = switch (units) {
-
-		case Globals.MINUTES -> ChronoUnit.MINUTES.between(start, end);
-		case Globals.HOURS -> Math.round(ChronoUnit.MINUTES.between(start, end) / 60.0);
-		case Globals.DAYS -> Math.round(ChronoUnit.HOURS.between(start, end) / 24.0);
-		default -> throw new IllegalArgumentException("Unexpected value: " + units);
-
-		};
-
-		return Math.round(time);
+		
+		return Chronos.unitsBetween(startTime, endTime, units);
 
 	}
 

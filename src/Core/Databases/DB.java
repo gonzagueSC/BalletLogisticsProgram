@@ -1,0 +1,372 @@
+package Core.Databases;
+
+import Core.Utilities.AppWarning;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.*;
+import java.lang.instrument.IllegalClassFormatException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+
+import static Core.Utilities.DataConstants.*;
+
+public class DB {
+	
+	private final File file;
+	private BufferedReader fileReader;
+	private BufferedWriter fileWriter;
+	private String fileType;
+	
+	public DB ( File file ) throws IOException {
+		
+		this.file = file;
+		
+		if ( fileExists(this.file) ) {
+			FileReader baseDataReader = new FileReader(file);
+			fileReader = new BufferedReader(baseDataReader);
+			
+			try {
+				
+				if ( fileReader.readAllAsString().isBlank() || fileReader.readAllAsString().isEmpty() ) {
+					
+					fileType = "TEMP";
+					
+				} else {
+					
+					fileReader = new BufferedReader(baseDataReader);
+					
+					fileType = (fileReader.readLine().substring(5));
+					
+				}
+				
+			} finally {
+				fileReader.close();
+			}
+		}
+		
+	}
+	
+	public File getFile () {
+		
+		return file;
+		
+	}
+	
+	public void setFileType ( String dataType ) throws IOException {
+		
+		fileType = dataType;
+		
+		if ( !fileExists(this.file) ) {
+			
+			fileStartup(file, dataType);
+			
+		}
+		
+	}
+	
+	public String getFileType () {
+		
+		return fileType;
+		
+	}
+	
+	public BufferedReader openReader () throws IOException {
+		
+		FileReader baseDataReader = new FileReader(file);
+		return new BufferedReader(baseDataReader);
+		
+	}
+	
+	public BufferedWriter openAppendWriter () throws IOException {
+		
+		FileWriter baseDataWriter = new FileWriter(file, true);
+		return new BufferedWriter(baseDataWriter);
+		
+	}
+	
+	public BufferedWriter openOverWriter () throws IOException {
+		
+		FileWriter baseDataWriter = new FileWriter(file);
+		BufferedWriter dataWriter = new BufferedWriter(baseDataWriter);
+		dataWriter.write(IDENTIFIER + fileType + "\n");
+		return dataWriter;
+		
+	}
+	
+	public Object getLines () throws IOException, IllegalArgumentException, AppWarning {
+		
+		try {
+			
+			fileReader = openReader();
+			
+			fileReader.readLine(); //IGNORE FILE TYPE INDICATOR
+			
+			Object result;
+			
+			if ( fileType.equals(JSON_TYPE) || fileType.equals(COMPLEX_JSON) ) {
+				
+				result = decodeFromFile(fileReader.readAllAsString());
+				
+				fileReader.close();
+				
+			} else if ( fileType.equals(TEXT_TYPE) ) {
+				
+				result = fileReader.readAllLines().toArray(new String[0]);
+				
+				fileReader.close();
+				
+			} else {
+				
+				throw new AppWarning("Unknown File Type Presented: " + fileType + ". Error " + "Originated in DB");
+				
+			}
+			
+			return result;
+			
+		} finally {
+			fileReader.close();
+		}
+		
+	}
+	
+	public Map<String, String> interpretJSON () throws IllegalClassFormatException, IOException, AppWarning {
+		
+		if ( !fileType.equals(JSON_TYPE) ) {
+			
+			throw new IllegalClassFormatException("Cannot access a JSON Map for a non JSON Entity");
+			
+		} else {
+			
+			Object lines = this.getLines();
+			
+			if ( lines.toString().isEmpty() ) {
+				
+				lines = "{}";
+				
+			}
+			
+			ObjectMapper mapper = new ObjectMapper();
+			
+			return mapper.readValue((String) lines, new TypeReference<>() {});
+			
+		}
+		
+	}
+	
+	public Map<String, Map<String, String>> interpretComplexJSON () throws IllegalClassFormatException, IOException, AppWarning {
+		
+		if ( !fileType.equals(COMPLEX_JSON) ) {
+			
+			throw new IllegalClassFormatException("Cannot access a Complex JSON for a non Complex_JSON Entity");
+			
+		} else {
+			
+			Object lines = this.getLines();
+			
+			if ( lines.toString().isEmpty() ) {
+				
+				lines = "{}";
+				
+			}
+			
+			ObjectMapper mapper = new ObjectMapper();
+			
+			return mapper.readValue((String) lines, new TypeReference<>() {});
+			
+		}
+		
+	}
+	
+	public void appendToJSON ( String key, String value ) throws IOException, IllegalClassFormatException, AppWarning {
+		
+		if ( !fileType.equals(JSON_TYPE) )
+			throw new AppWarning("Cannot append a key Value pair for a non JSON Entity");
+		
+		ObjectMapper mapper = new ObjectMapper();
+		
+		Map<String, String> json = interpretJSON();
+		
+		json.put(key, value);
+		
+		String jsonResult = mapper.writeValueAsString(json);
+		
+		fileWriter = openOverWriter();
+		
+		try {
+			
+			fileWriter.write(jsonResult);
+			
+		} finally {
+			fileWriter.close();
+		}
+		
+		
+	}
+	
+	@SuppressWarnings("unused")
+	public void appendToComplexJSON ( String key, Map<String, String> value ) throws IOException, IllegalClassFormatException, AppWarning {
+		
+		if ( !fileType.equals(COMPLEX_JSON) )
+			throw new AppWarning("Cannot append a key JSON value pair for a non COMPLEX_JSON Entity");
+		
+		String currentJSON = (String) getLines();
+		
+		Map<String, Map<String, String>> json = interpretComplexJSON();
+		
+		json.put(key, value);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		
+		String jsonResult = mapper.writeValueAsString(mapper);
+		
+		fileWriter = openOverWriter();
+		
+		try {
+			
+			fileWriter.write(jsonResult);
+			
+		} finally {
+			fileWriter.close();
+		}
+		
+	}
+	
+	public void appendToRAW ( String appending ) throws IOException {
+		
+		fileWriter = openAppendWriter();
+		
+		try {
+			
+			fileWriter.write(encodeForFile(appending) + "\n");
+			
+		} finally {
+			fileWriter.close();
+		}
+		
+	}
+	
+	public void writeJSON ( Map<String, String> jsonData ) throws IOException {
+		
+		ObjectMapper mapper = new ObjectMapper();
+		
+		String jsonResult = mapper.writeValueAsString(jsonData);
+		
+		fileWriter = openOverWriter();
+		
+		try {
+			
+			fileWriter.write(jsonResult);
+			
+		} finally {
+			fileWriter.close();
+		}
+		
+	}
+	
+	public void writeComplexJSON( Map<String, Map<String,String>> jsonData) throws IOException, AppWarning {
+	
+		if (!fileType.equals(COMPLEX_JSON))
+			throw new AppWarning("Can only write complex JSONs for complex JSON Entities");
+		
+		ObjectMapper mapper = new ObjectMapper();
+		
+		String jsonResult = mapper.writeValueAsString(jsonData);
+		
+		fileWriter = openOverWriter();
+		
+		try {
+			
+			fileWriter.write(jsonResult);
+			
+		} finally {
+			fileWriter.close();
+		}
+	
+	}
+	
+	public void writeRAW ( String[] file ) throws IOException {
+		
+		fileWriter = openOverWriter();
+		
+		try {
+			
+			for ( String line : file ) {
+				
+				fileWriter.write(encodeForFile(line) + "\n");
+				
+			}
+			
+		} finally {
+			fileWriter.close();
+		}
+		
+	}
+	
+	public String encodeForFile ( String input ) {
+		
+		if ( input == null ) return null;
+		return input.replace("\\", "\\\\")  // Must escape backslashes first!
+			   .replace("\n", "\\n")    // Encode newlines
+			   .replace("\r", "\\r")    // Encode carriage returns
+			   .replace("\t", "\\t")    // Encode tabs
+			   .replace("\"", "\\\"");  // Encode double quotes
+	}
+	
+	public static String decodeFromFile ( String input ) {
+		
+		if ( input == null ) return null;
+		return input.replace("\\\\", "\\")  // Must escape backslashes first!
+			   .replace("\\n", "\n")    // Encode newlines
+			   .replace("\\r", "\r")    // Encode carriage returns
+			   .replace("\\t", "\t")    // Encode tabs
+			   .replace("\\\"", "\"");  // Encode double quotes
+	}
+	
+	@SuppressWarnings("unused")
+	public static File retrieveFile ( String path ) {
+		
+		return new File(path);
+		
+	}
+	
+	public static boolean fileExists ( File file ) {
+		
+		return file.exists();
+		
+	}
+	
+	public static void createFile ( File file, String dataType ) throws IOException {
+		
+		Path path = Paths.get(file.getPath());
+		
+		boolean fileExists = !(new File(path.getParent().toString())).mkdirs() && !file.createNewFile();
+		
+		if ( !fileExists ) {
+			FileWriter fileWriter = new FileWriter(file);
+			try ( BufferedWriter bufferedWriter = new BufferedWriter(fileWriter) ) {
+				bufferedWriter.write(IDENTIFIER + dataType + "\n");
+			}
+		}
+		
+	}
+	
+	public static void fileStartup ( File file, String dataType ) throws IOException {
+		
+		if ( !fileExists(file) ) {
+			
+			createFile(file, dataType);
+			
+		}
+		
+	}
+	
+	@SuppressWarnings("unused")
+	public static String standardizeString(String input) {
+		
+		return input.trim().strip();
+		
+	}
+	
+}
