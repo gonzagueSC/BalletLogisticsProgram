@@ -1,5 +1,6 @@
 package Core.ComposedObjects;
 
+import Core.Swing.Button;
 import Core.Swing.UIComponent;
 import Core.Swing.View;
 import Core.Utilities.AppWarning;
@@ -7,16 +8,18 @@ import Core.Utilities.EntityField;
 
 import java.util.ArrayList;
 
+import static Core.Utilities.DataConstants.*;
 import static Core.Utilities.SwingConstants.*;
 
 public class Form extends View {
 	
 	View generalFormView;
+	Button saveButton;
 	View formContentView;
 	int fieldsUsed = 0;
 	int totalFields;
 	
-	public Form ( int fields, UIComponent<?> parent ) {
+	public Form ( int fields, UIComponent<?> parent ) throws AppWarning {
 		
 		int[] X = { FORM_PADDING, FORM_WIDTH, FORM_PADDING };
 		
@@ -66,6 +69,20 @@ public class Form extends View {
 		
 		formContentView = new View(this, formX, formY);
 		
+		saveButton = new Button(this);
+		
+		saveButton.setText("Submit");
+		
+		saveButton.setAction(this, saveForm);
+		
+		generalFormView.add(saveButton, 1, 2);
+		
+	}
+	
+	public void changeSaveButtonText(String text) {
+	
+		saveButton.setText(text);
+	
 	}
 	
 	public void addField ( EntityField field, String value ) throws AppWarning {

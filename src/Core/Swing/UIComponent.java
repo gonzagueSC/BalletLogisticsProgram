@@ -25,8 +25,6 @@ public abstract class UIComponent<T extends JComponent>{
 		component.repaint();
 		component.setVisible(true);
 		
-		if (parent != null) parent.Update();
-		
 	}
 	
 	public UIComponent<?> getParent () {

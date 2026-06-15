@@ -1,6 +1,9 @@
 package Entities;
 
-import Core.*;
+import Core.Databases.DB;
+import Core.Databases.DBEntity;
+import Core.Utilities.AppError;
+import Core.Utilities.AppWarning;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,14 +11,14 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.util.List;
 import java.util.Map;
 
-import static Core.DataConstants.*;
+import static Core.Utilities.DataConstants.*;
 
 public class CastEntity extends DBEntity {
 	
 	public static String dataType = JSON_TYPE;
 	File productionFolder;
 	
-	public CastEntity ( String filePath, File folder) throws IOException, IllegalClassFormatException {
+	public CastEntity ( String filePath, File folder) throws IOException, IllegalClassFormatException, AppWarning {
 		
 		DB.fileStartup(new File(folder, filePath), dataType);
 		super(new File(folder, filePath));
@@ -30,7 +33,7 @@ public class CastEntity extends DBEntity {
 	}
 	
 	@SuppressWarnings("unused")
-	public void castStudent(String studentID, String role) throws IOException {
+	public void castStudent(String studentID, String role) throws IOException, AppWarning, AppError {
 
 		if (!CastingMap().containsKey(role)) {
 			throw new AppWarning("Tried to cast a student to a non-existing role");
@@ -58,7 +61,7 @@ public class CastEntity extends DBEntity {
 	}
 	
 	@SuppressWarnings("unused")
-	public void removeStudentFromCast(String studentID, String role) throws IOException {
+	public void removeStudentFromCast(String studentID, String role) throws IOException, AppError, AppWarning {
 		
 		String currentCasting = CastingMap().get(role);
 		
@@ -75,7 +78,7 @@ public class CastEntity extends DBEntity {
 	
 	}
 	
-	public void removeRole(String roleName) throws IOException {
+	public void removeRole(String roleName) throws IOException, AppWarning {
 		
 		CastingMap().remove(roleName);
 		
@@ -90,7 +93,7 @@ public class CastEntity extends DBEntity {
 		
 	}
 
-	public void updateRoles( List<String> roles) throws IOException {
+	public void updateRoles( List<String> roles) throws IOException, AppWarning {
 
 		for (String role : roles) {
 
@@ -114,7 +117,7 @@ public class CastEntity extends DBEntity {
 
 	}
 	
-	public void changeRoleName(String oldRole, String newRole) throws IOException {
+	public void changeRoleName(String oldRole, String newRole) throws IOException, AppWarning {
 	
 		if (CastingMap().containsKey(oldRole)) {
 			
@@ -129,7 +132,7 @@ public class CastEntity extends DBEntity {
 	}
 	
 	@Override
-	protected void initializeComponents () throws IllegalClassFormatException, IOException {
+	protected void initializeComponents () throws IllegalClassFormatException, IOException, AppWarning {
 	
 		setDataType(dataType);
 	

@@ -13,13 +13,14 @@ public class FormField extends View {
 	
 	Label label;
 	TextField textField;
+	StandaloneCheckbox checkbox;
 	
-	public FormField( UIComponent<?> parent , EntityField field, String value ) throws AppWarning {
-	
-		int[] X = {FIELD_PADDING, FIELD_WIDTH, FIELD_PADDING};
-		int[] Y = {FIELD_PADDING, FIELD_TITLE_HEIGHT, FIELD_HEIGHT, FIELD_PADDING};
+	public FormField ( UIComponent<?> parent, EntityField field, String value ) throws AppWarning {
 		
-		super (parent, X, Y);
+		int[] X = { FIELD_PADDING, FIELD_WIDTH, FIELD_PADDING };
+		int[] Y = { FIELD_PADDING, FIELD_TITLE_HEIGHT, FIELD_HEIGHT, FIELD_PADDING };
+		
+		super(parent, X, Y);
 		
 		this.field = field;
 		
@@ -27,28 +28,41 @@ public class FormField extends View {
 		
 		label.setText(field.getName());
 		
-		textField = new TextField(this);
+		if ( field.getFieldType() != Boolean.class ) {
+			textField = new TextField(this);
+			
+			textField.setText(value);
+			
+			this.add(textField, 2, 3);
+			
+		} else {
 		
-		textField.setText(value);
+			checkbox = new StandaloneCheckbox(this);
+			
+			this.add(checkbox, 2, 3);
+		
+		}
 		
 		this.add(label, 2, 2);
-		this.add(textField, 2, 3);
-	
 	}
 	
-	public boolean dataIsValid() {
+	public boolean dataIsValid () {
+		
+		if (textField == null) return TypeController.getValue(String.valueOf(this.checkbox.getValue()), field.getFieldType()) != null;
 		
 		return TypeController.getValue(this.textField.getText(), field.getFieldType()) != null;
-	
+		
 	}
 	
-	public String getValue() {
+	public String getValue () {
+		
+		if (textField == null) return String.valueOf(checkbox.getValue());
 		
 		return textField.getText();
 		
 	}
 	
-	public EntityField getField() {
+	public EntityField getField () {
 		
 		return field;
 		

@@ -58,6 +58,12 @@ public class PasswordBox extends RatioComponent<JPasswordField> {
 		
 	}
 	
+	public char[] getPassword () {
+		
+		return this.getComponent().getPassword();
+		
+	}
+	
 	@Override
 	public void stylize () {
 	

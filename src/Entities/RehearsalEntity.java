@@ -1,6 +1,8 @@
 package Entities;
 
-import Core.*;
+
+import Core.Databases.*;
+import Core.Utilities.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +10,8 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static Core.DataConstants.*;
+import static Core.Utilities.DataConstants.*;
+
 
 public class RehearsalEntity extends JSONObjectEntity {
 
@@ -23,7 +26,7 @@ public class RehearsalEntity extends JSONObjectEntity {
     public static final EntityField rehearsalNotes = new EntityField("rehearsal_notes", false, String.class);
     public static final EntityField rehearsalCast = new EntityField("rehearsal_cast", true, String.class);
 
-    public RehearsalEntity ( String rehearsalID, File folder) throws IOException, IllegalClassFormatException {
+    public RehearsalEntity ( String rehearsalID, File folder) throws IOException, IllegalClassFormatException, AppWarning {
 
         super(rehearsalID, folder);
         this.productionFolder = folder;
@@ -36,7 +39,7 @@ public class RehearsalEntity extends JSONObjectEntity {
 
     }
 
-    public void setUpRehearsal(String rehearsalNameString, String rehearsalDateString, String rehearsalStartTimeString, String rehearsalEndTimeString) throws IOException, IllegalClassFormatException {
+    public void setUpRehearsal(String rehearsalNameString, String rehearsalDateString, String rehearsalStartTimeString, String rehearsalEndTimeString) throws IOException, IllegalClassFormatException, AppWarning {
         Map<EntityField, String> fields = new HashMap<>();
 
         fields.put(rehearsalName, rehearsalNameString);
@@ -48,33 +51,33 @@ public class RehearsalEntity extends JSONObjectEntity {
 
     }
 
-    public void setRehearsalName(String rehearsalNameString) throws IOException {
-        this.saveField(rehearsalName, rehearsalNameString);
+    public void setRehearsalName(String rehearsalNameString) throws IOException, AppWarning {
+        this.saveField(rehearsalName, rehearsalNameString, false);
     }
 
-    public void setRehearsalDate(String rehearsalDateString) throws IOException {
-        this.saveField(rehearsalDate, rehearsalDateString);
+    public void setRehearsalDate(String rehearsalDateString) throws IOException, AppWarning {
+        this.saveField(rehearsalDate, rehearsalDateString, false);
     }
 
-    public void setRehearsalStartTime(String rehearsalStartTimeString) throws IOException {
-        this.saveField(rehearsalStartTime, rehearsalStartTimeString);
+    public void setRehearsalStartTime(String rehearsalStartTimeString) throws IOException, AppWarning {
+        this.saveField(rehearsalStartTime, rehearsalStartTimeString, false);
     }
 
-    public void setRehearsalEndTime(String rehearsalEndTimeString) throws IOException {
-        this.saveField(rehearsalEndTime, rehearsalEndTimeString);
+    public void setRehearsalEndTime(String rehearsalEndTimeString) throws IOException, AppWarning {
+        this.saveField(rehearsalEndTime, rehearsalEndTimeString, false);
     }
     
     @SuppressWarnings("unused")
-    public void setRehearsalLocation(String rehearsalLocationString) throws IOException {
-        this.saveField(rehearsalLocation, rehearsalLocationString);
+    public void setRehearsalLocation(String rehearsalLocationString) throws IOException, AppWarning {
+        this.saveField(rehearsalLocation, rehearsalLocationString, false);
     }
     
     @SuppressWarnings("unused")
-    public void setRehearsalNotes(String rehearsalNotesString) throws IOException {
-        this.saveField(rehearsalNotes, rehearsalNotesString);
+    public void setRehearsalNotes(String rehearsalNotesString) throws IOException, AppWarning {
+        this.saveField(rehearsalNotes, rehearsalNotesString, false);
     }
 
-    public void addRehearsalCast(String castToAdd) throws IOException {
+    public void addRehearsalCast(String castToAdd) throws IOException, AppError, AppWarning {
 
         String currentRoles = this.getFieldValue(rehearsalCast);
 
@@ -89,11 +92,11 @@ public class RehearsalEntity extends JSONObjectEntity {
 
         currentRoles += ((!currentRoles.isBlank()) ? ", " : "") + castToAdd;
 
-        this.saveField(rehearsalCast, currentRoles);
+        this.saveField(rehearsalCast, currentRoles, false);
 
     }
 
-    public void removeRehearsalCast(String castToRemove) throws IOException {
+    public void removeRehearsalCast(String castToRemove) throws IOException, AppError, AppWarning {
 
         String currentRoles = this.getFieldValue(rehearsalCast);
 
@@ -104,24 +107,24 @@ public class RehearsalEntity extends JSONObjectEntity {
 
         currentRoles = currentRoles.replaceFirst(regex, "");
 
-        this.saveField(rehearsalCast, (currentRoles.isBlank()) ? null : currentRoles);
+        this.saveField(rehearsalCast, (currentRoles.isBlank()) ? null : currentRoles, false);
 
     }
 
     @Override
-    protected void initializeComponents() throws IllegalClassFormatException, IOException {
+    protected void initializeComponents() throws IllegalClassFormatException, IOException, AppWarning {
 
         setDataType(dataType);
 
     }
     
-    public void removeRole(String roleToRemove) throws IOException {
+    public void removeRole(String roleToRemove) throws IOException, AppError, AppWarning {
         
         removeRehearsalCast(roleToRemove);
         
     }
     
-    public void editRole(String oldRole, String newRole) throws IOException {
+    public void editRole(String oldRole, String newRole) throws IOException, AppError, AppWarning {
         
         removeRehearsalCast(oldRole);
         addRehearsalCast(newRole);

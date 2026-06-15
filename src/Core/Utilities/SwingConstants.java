@@ -1,5 +1,7 @@
 package Core.Utilities;
 
+import java.awt.*;
+
 public class SwingConstants {
 	
 	public static final String SAVE = "SAVE";
@@ -29,5 +31,13 @@ public class SwingConstants {
 	public static final int FIELD_HEIGHT = 2;
 	
 	public static final int DEFAULT_TITLE = 2;
+	
+	public static final Color cellBackgroundColor = new Color(255, 255, 255);
+	
+	public static final Color cellForegroundColor = new Color(255,0,0);
+	
+	public static final Color selectedCellBackgroundColor = new Color(0, 0, 0);
+	
+	public static final Color selectedCellForegroundColor = new Color(255, 0, 0);
 
 }

@@ -81,6 +81,10 @@ public class DataConstants {
 	
 	public static final EntityField[] Permissions = {};
 	
+	public static final String saveFormAction = "save";
+	
+	public static final Action saveForm = new Action(saveFormAction, null);
+	
 	//All permissions shall be added here as they are created.
 
 }

@@ -66,6 +66,12 @@ public class Checkbox extends RatioComponent<JCheckBox> {
 		
 	}
 	
+	public boolean getValue() {
+		
+		return this.getComponent().isSelected();
+		
+	}
+	
 	public boolean getSelected () {
 		
 		return this.getComponent().isSelected();

@@ -1,6 +1,8 @@
 package Entities;
 
-import Core.RegistryEntity;
+import Core.Databases.RegistryEntity;
+import Core.Utilities.AppError;
+import Core.Utilities.AppWarning;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static Core.DataConstants.JSON_TYPE;
+import static Core.Utilities.DataConstants.*;
 
 public class RehearsalsRegistryEntity extends RegistryEntity {
 	
@@ -19,7 +21,7 @@ public class RehearsalsRegistryEntity extends RegistryEntity {
 	public static final String RegistryName = "Rehearsals";
 	public static final String format = "REHEARSAL-%04d";
 	
-	public RehearsalsRegistryEntity ( File production ) throws IllegalClassFormatException, IOException {
+	public RehearsalsRegistryEntity ( File production ) throws IllegalClassFormatException, IOException, AppWarning {
 		
 		File Registry = new File(production, RegistryName);
 		
@@ -45,7 +47,7 @@ public class RehearsalsRegistryEntity extends RegistryEntity {
 		
 	}
 	
-	public void addRehearsal ( String rehearsalName, String timeStart, String timeEnd, String date ) throws IllegalClassFormatException, IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+	public void addRehearsal ( String rehearsalName, String timeStart, String timeEnd, String date ) throws IllegalClassFormatException, IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, AppWarning {
 		
 		this.addToFile(rehearsalName + ", " + timeStart + " - " + timeEnd + ", " + date, getNextRehearsalID());
 		
@@ -60,7 +62,7 @@ public class RehearsalsRegistryEntity extends RegistryEntity {
 	}
 	
 	@SuppressWarnings("unused")
-	public void changeRehearsalName ( RehearsalEntity rehearsal, String newName ) throws IOException {
+	public void changeRehearsalName ( RehearsalEntity rehearsal, String newName ) throws IOException, AppWarning {
 		
 		String RehearsalFullName = rehearsal.getFullRehearsalName();
 		
@@ -77,7 +79,7 @@ public class RehearsalsRegistryEntity extends RegistryEntity {
 	}
 	
 	@SuppressWarnings("unused")
-	public void changeRehearsalStart ( RehearsalEntity rehearsal, String newStartTime) throws IOException {
+	public void changeRehearsalStart ( RehearsalEntity rehearsal, String newStartTime) throws IOException, AppWarning {
 		
 		String RehearsalFullName = rehearsal.getFullRehearsalName();
 		
@@ -99,7 +101,7 @@ public class RehearsalsRegistryEntity extends RegistryEntity {
 	}
 	
 	@SuppressWarnings("unused")
-	public void changeRehearsalEnd ( RehearsalEntity rehearsal, String newEndTime) throws IOException {
+	public void changeRehearsalEnd ( RehearsalEntity rehearsal, String newEndTime) throws IOException, AppWarning {
 		
 		String RehearsalFullName = rehearsal.getFullRehearsalName();
 		
@@ -121,7 +123,7 @@ public class RehearsalsRegistryEntity extends RegistryEntity {
 	}
 	
 	@SuppressWarnings("unused")
-	public void changeRehearsalDate ( RehearsalEntity rehearsal, String newDate) throws IOException {
+	public void changeRehearsalDate ( RehearsalEntity rehearsal, String newDate) throws IOException, AppWarning {
 		
 		String RehearsalFullName = rehearsal.getFullRehearsalName();
 		
@@ -160,7 +162,7 @@ public class RehearsalsRegistryEntity extends RegistryEntity {
 		
 	}
 	
-	public void changeRole(String oldRole, String newRole) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+	public void changeRole(String oldRole, String newRole) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, AppError, AppWarning {
 	
 		List<String> rehearsals = getRehearsalsNames();
 		
@@ -173,7 +175,7 @@ public class RehearsalsRegistryEntity extends RegistryEntity {
 	
 	}
 	
-	public void removeRole(String role) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+	public void removeRole(String role) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, AppError, AppWarning {
 	
 		List<String> rehearsals = getRehearsalsNames();
 		
